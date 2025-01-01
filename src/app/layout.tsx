@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import "./globals.css";
+import { Provider } from "@/components/ui/provider";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -18,16 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${notoSans.className} bg-primaryBackground antialiased`}
-      >
-        <div
-          id="main-grid"
-          className="grid grid-cols-4 p-4 md:grid-cols-6 lg:grid-cols-12"
-        >
-          {children}
-        </div>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${notoSans.className} antialiased`}>
+        <Provider>
+          <div
+            id="main-grid"
+            className="grid grid-cols-4 p-4 md:grid-cols-6 lg:grid-cols-12"
+          >
+            {children}
+          </div>
+        </Provider>
       </body>
     </html>
   );
