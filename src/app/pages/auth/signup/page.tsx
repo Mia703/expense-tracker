@@ -1,43 +1,41 @@
 "use client";
-
 import { Alert, Button, Paper, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Home() {
+export default function signup() {
   const [message, setMessage] = useState(false);
-  const loginRouter = useRouter();
+  const signupRouter = useRouter();
 
   const formik = useFormik({
     initialValues: {
+      fullName: "",
       email: "",
       password: "",
     },
     onSubmit: async (values) => {
       // console.log(values);
 
-      const response = await fetch("/pages/api/login", {
+      const response = await fetch("/pages/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          fullName: values.fullName,
           email: values.email,
           password: values.password,
         }),
       });
 
-      const data = await response.json();
-
-      // if response.status is between 200-299
       if (response.ok) {
         setMessage(false);
-        // reroute to budget page
-        loginRouter.push("/pages/expense-tracker/budget");
+        signupRouter.push("/pages/expense-tracker/budget");
       } else {
-        setMessage(true); // display client-side error message
+        setMessage(true);
+        const data = await response.json();
         console.log("Error is as Follows:", data);
       }
     },
@@ -45,13 +43,13 @@ export default function Home() {
 
   return (
     <section
-      id="login"
+      id="signup"
       className="col-span-4 flex h-[90vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12"
     >
-      <div id="login-wrapper" className="w-full p-4 md:w-[50vw] lg:w-[30vw]">
+      <div id="signup-wrapper" className="w-full p-4 md:w-[50vw] lg:w-[30vw]">
         <h1 className="mb-6 text-center">Expense Tracker</h1>
         <Paper elevation={3} className="p-6">
-          <h2 className="mb-4">Login</h2>
+          <h2 className="mb-4">Sign Up</h2>
           <form
             action=""
             method="post"
@@ -59,54 +57,65 @@ export default function Home() {
             onSubmit={formik.handleSubmit}
           >
             <TextField
+              type="text"
+              id="fullName"
+              label="Full Name"
+              variant="outlined"
+              required
+              className="my-2 mt-6"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.fullName}
+            />
+            <TextField
               type="email"
               id="email"
               label="Email Address"
               variant="outlined"
               required
-              className="my-6"
-              onBlur={formik.handleBlur}
+              className="my-2"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.email}
             />
-            <Link
-              href={"/pages/auth/password-reset/"}
-              className="text-right text-sm font-bold"
-            >
-              Forgot Password?
-            </Link>
             <TextField
+              type="password"
               id="password"
               label="Password"
               variant="outlined"
               required
-              className="my-2 mb-4"
-              onBlur={formik.handleBlur}
+              className="my-2"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.password}
-              type="password"
             />
             {message ? (
-              <div className="login-feedback-wrapper my-2">
+              <div className="alert-wrapper">
                 <Alert severity="error">
-                  Login was not successful. Please try again.
+                  Email already exists. Please try logging in or forgot
+                  password.
                 </Alert>
               </div>
             ) : (
-              <div></div>
+              <div className="alert-wrapper"></div>
             )}
             <Button
               type="submit"
               variant="contained"
               className="my-4 bg-primaryBlack"
             >
-              Login
+              Sign Up
             </Button>
           </form>
-          <div className="signup-wrapper flex flex-row items-center justify-center">
-            <p>Don&apos;t have an account?</p>
-            <Link href={"/pages/auth/signup"} className="mx-1 font-bold">
-              Sign Up
+          <div className="login-wrapper flex flex-row items-center justify-center">
+            <p>Already have an account?</p>
+            <Link href={"/"} className="mx-1 font-bold">
+              Login
+            </Link>
+          </div>
+          <div className="forgot-password-wrapper text-center">
+            <Link href={"/pages/auth/password-reset"} className="font-bold">
+              Forgot Password?
             </Link>
           </div>
         </Paper>

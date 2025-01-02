@@ -46,3 +46,8 @@ Formik & Yup -- form validation
 Xata.io -- database
 
 TailwindCSS -- styling and responsive design
+
+https://nextjs.org/docs/app/building-your-application/routing/redirecting
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages
+
