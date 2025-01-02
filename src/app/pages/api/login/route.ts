@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message:
-            "Authentication unsuccessful; User's email or password is not the in the database.",
+            "Authentication un-successful.",
         },
         { status: 401 },
       );
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     // else, the user was found in the database.
     return NextResponse.json(
-      { message: "Authentication successful; User is in database." },
+      { message: "Authentication successful." },
       { status: 200 },
     );
   } catch (error) {

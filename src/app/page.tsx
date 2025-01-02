@@ -29,7 +29,7 @@ export default function Home() {
         }),
       });
 
-      const data = await response.json();
+      // const data = await response.json();
 
       // if response.status is between 200-299
       if (response.ok) {
@@ -38,7 +38,7 @@ export default function Home() {
         loginRouter.push("/pages/expense-tracker/budget");
       } else {
         setMessage(true); // display client-side error message
-        console.log("Error is as Follows:", data);
+        // console.log(data);
       }
     },
   });

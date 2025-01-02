@@ -26,13 +26,13 @@ export async function POST(request: Request) {
 
       if (!addUser) {
         return NextResponse.json(
-          { message: "Creating new user was unsuccessful" },
+          { message: "New user creation un-successful" },
           { status: 401 },
         );
       }
 
       return NextResponse.json(
-        { message: "Creating new user was successful" },
+        { message: "New user creation successful" },
         { status: 200 },
       );
     }

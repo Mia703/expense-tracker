@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function signup() {
+export default function Signup() {
   const [message, setMessage] = useState(false);
   const signupRouter = useRouter();
 
@@ -35,8 +35,6 @@ export default function signup() {
         signupRouter.push("/pages/expense-tracker/budget");
       } else {
         setMessage(true);
-        const data = await response.json();
-        console.log("Error is as Follows:", data);
       }
     },
   });
