@@ -1,0 +1,12 @@
+{
+  "id": "mig_ctv14kb2vtkja3ivgdv0",
+  "parentID": "mig_ctv10nd7965n01fhvue0",
+  "checksum": "1:5786b918cf3fb106edf02a75c1fc403d5d776b88a319aca359d6f208ffab7407",
+  "operations": [
+    {
+      "addTable": {
+        "table": "salary"
+      }
+    }
+  ]
+}

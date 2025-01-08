@@ -1,0 +1,13 @@
+{
+  "id": "mig_ctv0u2b2vtkja3ivgdpg",
+  "parentID": "mig_ctv0u0t7965n01fhvuc0",
+  "checksum": "1:410fcbb9167c51eb7a9e9a4bfb8a987657084e509821b1bfcfa88cba15379e1b",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "user_id",
+        "table": "salary"
+      }
+    }
+  ]
+}

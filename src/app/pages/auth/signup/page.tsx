@@ -100,7 +100,7 @@ export default function Signup() {
             <Button
               type="submit"
               variant="contained"
-              className="my-4 bg-primaryBlack"
+              className="my-4 bg-primaryBlack font-semibold"
             >
               Sign Up
             </Button>

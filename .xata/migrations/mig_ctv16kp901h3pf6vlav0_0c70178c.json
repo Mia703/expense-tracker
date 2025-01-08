@@ -1,0 +1,14 @@
+{
+  "id": "mig_ctv16kp901h3pf6vlav0",
+  "parentID": "mig_ctv159d7965n01fhvujg",
+  "checksum": "1:0c70178c148215ded56e8b56814a3a61feaa1140dbdf20049dfe8aebe5885a02",
+  "operations": [
+    {
+      "renameColumn": {
+        "newName": "user",
+        "oldName": "user_id",
+        "table": "salary"
+      }
+    }
+  ]
+}

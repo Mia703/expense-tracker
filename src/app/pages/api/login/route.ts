@@ -45,10 +45,10 @@ export async function POST(request: Request) {
         { status: 401 },
       );
     }
-
+    
     // else, the user was found in the database.
     return NextResponse.json(
-      { message: "Authentication successful." },
+      { message: `Authentication successful. id:${user.id}` },
       { status: 200 },
     );
   } catch (error) {

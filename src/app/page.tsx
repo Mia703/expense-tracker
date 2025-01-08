@@ -29,11 +29,16 @@ export default function Home() {
         }),
       });
 
-      // const data = await response.json();
-
+      
       // if response.status is between 200-299
       if (response.ok) {
         setMessage(false);
+
+        // save user's id in localstorage for later retrieval
+        const data = await response.json();
+        const id = data.message.split('id:')[1].trim();
+        localStorage.setItem('user_id', id);
+        
         // reroute to budget page
         loginRouter.push("/pages/expense-tracker/budget");
       } else {
@@ -98,7 +103,7 @@ export default function Home() {
             <Button
               type="submit"
               variant="contained"
-              className="my-4 bg-primaryBlack"
+              className="my-4 bg-primaryBlack font-semibold"
             >
               Login
             </Button>

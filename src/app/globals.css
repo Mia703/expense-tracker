@@ -13,7 +13,7 @@
 		@apply font-bold;
 	}
 
-	p, a {
+	p, a, label {
 		@apply text-sm;
 	}
 

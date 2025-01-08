@@ -20,7 +20,8 @@ export default function PasswordReset() {
       return (
         <div className="reset-feedback-wrapper my-2">
           <Alert severity="error">
-            Password reset was unsuccessful, email does not exist. Please try again.
+            Password reset was unsuccessful, email does not exist. Please try
+            again.
           </Alert>
         </div>
       );
@@ -99,7 +100,7 @@ export default function PasswordReset() {
             <Button
               type="submit"
               variant="contained"
-              className="my-4 bg-primaryBlack"
+              className="my-4 bg-primaryBlack font-semibold"
             >
               Reset Password
             </Button>
