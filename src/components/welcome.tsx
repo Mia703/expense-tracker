@@ -8,12 +8,14 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Welcome() {
-  const [displayWelcome, setDisplayWelcome] = useState(false);
+interface WelcomeProps {
+  displayWelcome: boolean;
+}
 
-  console.log('welcome', displayWelcome);
+export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
+  const refreshDashboard = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -35,12 +37,10 @@ export default function Welcome() {
         }),
       });
 
+      // if creating salary for user was successful
+      // refresh dashboard page to hide welcome form
       if (response.ok) {
-        setDisplayWelcome(true);
-        localStorage.setItem('user_salary', `${values.salary}`);
-      }
-      else {
-        setDisplayWelcome(false);
+        refreshDashboard.push("/pages/expense-tracker/dashboard");
       }
     },
   });
@@ -128,4 +128,4 @@ export default function Welcome() {
   ) : (
     <div></div>
   );
-}
+};
