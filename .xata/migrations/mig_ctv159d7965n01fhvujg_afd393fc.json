@@ -1,0 +1,19 @@
+{
+  "id": "mig_ctv159d7965n01fhvujg",
+  "parentID": "mig_ctv154b2vtkja3ivge10",
+  "checksum": "1:afd393fc20ba785ad961231de9e8e2cb38d9f94d51059881f8e01e21df6d3f15",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user_id",
+          "type": "link",
+          "link": {
+            "table": "users"
+          }
+        },
+        "table": "salary"
+      }
+    }
+  ]
+}

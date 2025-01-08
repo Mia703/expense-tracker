@@ -1,0 +1,17 @@
+{
+  "id": "mig_ctv0tsd7965n01fhvub0",
+  "parentID": "mig_ctv0tfr2vtkja3ivgdog",
+  "checksum": "1:40144cecba3fe279ee8451500657c36ec0f01fee9393972e9a41ae89792f19b5",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "salary",
+          "type": "float",
+          "defaultValue": "0"
+        },
+        "table": "salary"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "mig_ctv1pnj2vtkja3ivge40",
+  "parentID": "mig_ctv16kp901h3pf6vlav0",
+  "checksum": "1:57ff33f9ee53483a9a3c1b43087943363d559c750b3f0b8bcc6e846b452b6bf6",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "frequency",
+          "type": "text",
+          "notNull": true,
+          "defaultValue": "bi-weekly"
+        },
+        "table": "salary"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "mig_ctv0ufl7965n01fhvud0",
+  "parentID": "mig_ctv0u4r2vtkja3ivgdqg",
+  "checksum": "1:0f7291e2fb7583e3c50bdd8d2228f3c18c3ffaa5de3057377eb509ac48ce3d8b",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "start_date",
+          "type": "datetime",
+          "notNull": true,
+          "defaultValue": "now"
+        },
+        "table": "salary"
+      }
+    }
+  ]
+}
