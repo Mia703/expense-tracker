@@ -1,5 +1,6 @@
 "use client";
 import {
+  Alert,
   Button,
   FormControl,
   InputLabel,
@@ -8,14 +9,14 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-interface WelcomeProps {
-  displayWelcome: boolean;
-}
-
-export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
-  const refreshDashboard = useRouter();
+export default function Salary() {
+  const [salaryFeedback, setSalaryFeedback] = useState(false);
+  const salaryRouter = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -24,7 +25,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
       date: "",
     },
     onSubmit: async (values) => {
-      const response = await fetch("/pages/api/welcome", {
+      const response = await fetch("/pages/api/salary/addSalary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,26 +39,26 @@ export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
       });
 
       // if creating salary for user was successful
-      // refresh dashboard page to hide welcome form
+      // go to dashboard page
       if (response.ok) {
-        refreshDashboard.push("/pages/expense-tracker/dashboard");
+        salaryRouter.push("/pages/expense-tracker/dashboard/");
+      } else {
+        setSalaryFeedback(true);
       }
     },
   });
 
-  return !displayWelcome ? (
-    <div className="welcome-wrapper pointer-events-none fixed left-0 top-0 flex h-dvh w-full flex-col items-center justify-center bg-gray-900/45">
-      <div className="welcome-form-wrapper pointer-events-auto w-[80vw] rounded-md bg-primaryWhite p-4 md:w-[60vw] lg:w-[40vw]">
+  return (
+    <section
+      id="salary"
+      className="col-span-4 flex h-[70vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12"
+    >
+      <div className="salary-form-wrapper w-[80vw] rounded-md bg-primaryWhite p-4 shadow-md md:w-[60vw] lg:w-[40vw]">
         <div className="message-wrapper my-2 text-center">
-          <h2 className="mb-2">Welcome to Expense Tracker!</h2>
+          <h2 className="mb-2 capitalize">Set your salary</h2>
           <p>
-            Expense tracker is an easy-to-use, table-based expense tracker for
-            dummies. To get started, simply{" "}
-            <span className="font-semibold">
-              enter your current or expected salary, how often you get paid, and
-              the starting date of your payroll
-            </span>
-            .
+            Enter your current or expected salary, how often you get paid, and
+            the starting date of your payroll.
           </p>
         </div>
 
@@ -77,7 +78,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
             required
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.salary}
+            value={formik.values.salary == 0 ? "" : formik.values.salary}
           />
 
           <FormControl fullWidth className="my-3">
@@ -115,6 +116,13 @@ export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
             value={formik.values.date}
           />
 
+          {salaryFeedback ? (
+            <Alert severity="error">
+              Salary update was un-successful. Please try again.
+            </Alert>
+          ) : (
+            <div></div>
+          )}
           <Button
             type="submit"
             variant="contained"
@@ -123,9 +131,15 @@ export const Welcome: React.FC<WelcomeProps> = ({ displayWelcome }) => {
             Save
           </Button>
         </form>
+        <div className="back-btn-wrapper">
+          <Link
+            href={"/pages/expense-tracker/dashboard"}
+            className="font-bold text-gray-400"
+          >
+            {<ArrowBackIcon />} Back to Dashboard
+          </Link>
+        </div>
       </div>
-    </div>
-  ) : (
-    <div></div>
+    </section>
   );
-};
+}

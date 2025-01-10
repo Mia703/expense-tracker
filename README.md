@@ -51,3 +51,9 @@ https://nextjs.org/docs/app/building-your-application/routing/redirecting
 
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages
 
+https://stackoverflow.com/questions/56701337/type-boolean-is-not-assignable-to-type-false
+
+https://www.pluralsight.com/resources/blog/guides/use-interface-props-in-functional-components-using-typescript-with-react
+
+https://dev.to/antdp425/react-fetch-data-from-api-with-useeffect-27le
+

@@ -32,7 +32,12 @@ export default function Signup() {
 
       if (response.ok) {
         setMessage(false);
-        signupRouter.push("/pages/expense-tracker/budget");
+
+        const data = await response.json();
+        const id = data.message.split('id:')[1].trim();
+        localStorage.setItem('user_id', id);
+        
+        signupRouter.push("/pages/expense-tracker/dashboard");
       } else {
         setMessage(true);
       }

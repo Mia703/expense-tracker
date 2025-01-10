@@ -40,7 +40,7 @@ export default function Home() {
         localStorage.setItem('user_id', id);
         
         // reroute to budget page
-        loginRouter.push("/pages/expense-tracker/budget");
+        loginRouter.push("/pages/expense-tracker/dashboard");
       } else {
         setMessage(true); // display client-side error message
         // console.log(data);

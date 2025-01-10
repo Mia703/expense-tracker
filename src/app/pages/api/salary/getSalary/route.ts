@@ -8,7 +8,10 @@ export async function POST(request: Request) {
     const { id } = await request.json();
 
     if (!id) {
-      return NextResponse.json({ message: "User id is required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "User id is required" },
+        { status: 400 },
+      );
     }
 
     const salary = await xata.db.salary
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { message: `Get salary successful. salary:${salary.salary}` },
+      { message: `Get salary successful. salary:${salary.salary},frequency:${salary.frequency},date:${salary.start_date}` },
       { status: 200 },
     );
   } catch (error) {

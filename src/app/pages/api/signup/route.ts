@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json(
-        { message: "New user creation successful" },
+        { message: `New user creation successful. id:${addUser.id}` },
         { status: 200 },
       );
     }
