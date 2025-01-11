@@ -1,7 +1,8 @@
 "use client";
-import GoalsTable from "@/components/goals";
+import AccountTable from "@/components/accountTable";
+import GoalsTable from "@/components/goalsTable";
 import { SalaryTable } from "@/components/salaryTable";
-import SavingsTable from "@/components/savings";
+import SavingsTable from "@/components/savingsTable";
 import { Alert, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -177,6 +178,8 @@ export default function Dashboard() {
             Update Salary
           </Button>
         </div>
+
+        <AccountTable />
 
         <GoalsTable />
         <SavingsTable />

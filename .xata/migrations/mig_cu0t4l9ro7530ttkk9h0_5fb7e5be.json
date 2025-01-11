@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu0t4l9ro7530ttkk9h0",
+  "parentID": "mig_cu0t45ga9dahcg2876e0",
+  "checksum": "1:5fb7e5bec72865c487d1cbebde22d0b6a48cba6a6a4c24c2feae57d7132ef157",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "acct_name",
+          "type": "text",
+          "notNull": true,
+          "defaultValue": "null"
+        },
+        "table": "accounts"
+      }
+    }
+  ]
+}

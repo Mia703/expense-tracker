@@ -5,35 +5,35 @@ const xata = getXataClient();
 
 export async function POST(request: Request) {
   try {
-    const { id, salary, frequency, date } = await request.json();
+    const { id } = await request.json();
 
-    if (!id || salary < 0 || !frequency || !date) {
+    if (!id) {
       return NextResponse.json(
-        { message: "id, salary, frequency, and date are required" },
-        { status: 400 },
+        { message: "User id is required." },
+        { status: 401 },
       );
     }
 
-    const addSalary = await xata.db.salary.create({
-      salary: salary,
-      start_date: date,
-      user: id,
-      frequency: frequency,
-    });
+    const getAccount = await xata.db.accounts
+      .filter({
+        "user.id": id,
+      })
+      .sort("acct_name", "asc")
+      .getAll();
 
-    if (!addSalary) {
+    if (!getAccount) {
       return NextResponse.json(
-        { message: "New salary creation un-successful" },
+        { message: "Get account un-successful" },
         { status: 401 },
       );
     }
 
     return NextResponse.json(
-      { message: "New salary creation successful" },
+      { message: JSON.stringify(getAccount) },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error submitting init salary info", error);
+    console.error("Error getting account information", error);
     return NextResponse.json(
       {
         message:

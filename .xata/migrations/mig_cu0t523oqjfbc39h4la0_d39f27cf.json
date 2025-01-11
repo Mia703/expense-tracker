@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu0t523oqjfbc39h4la0",
+  "parentID": "mig_cu0t4tboqjfbc39h4l90",
+  "checksum": "1:d39f27cfc816def0aca053e428c616043f226eefab57084c4ce0bf6e8f3d12fd",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "current_balance",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0.00"
+        },
+        "table": "accounts"
+      }
+    }
+  ]
+}

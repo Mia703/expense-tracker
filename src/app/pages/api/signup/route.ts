@@ -44,5 +44,12 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Error checking full name and email", error);
+    return NextResponse.json(
+      {
+        message:
+          "Internal server error. The server has encountered a situation it does not know how to handle.",
+      },
+      { status: 500 },
+    );
   }
 }

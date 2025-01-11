@@ -8,123 +8,111 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useFormik } from "formik";
 import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-export default function Salary() {
-  const [salaryFeedback, setSalaryFeedback] = useState(false);
-  const salaryRouter = useRouter();
+export default function Account() {
+  const [accountFeedback, setAccountFeedback] = useState(false);
+  const accountRouter = useRouter();
 
   const formik = useFormik({
     initialValues: {
-      salary: 0,
-      frequency: "",
-      date: "",
+      name: "",
+      type: "",
+      number: 0,
     },
     onSubmit: async (values) => {
-      const response = await fetch("/pages/api/salary/addSalary", {
+      const response = await fetch("/pages/api/account/addAccount", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: localStorage.getItem("user_id"),
-          salary: values.salary,
-          frequency: values.frequency,
-          date: `${values.date}T00:00:00Z`,
+          name: values.name,
+          type: values.type,
+          number: values.number,
         }),
       });
 
-      // if creating salary for user was successful
-      // go to dashboard page
       if (response.ok) {
-        salaryRouter.push("/pages/expense-tracker/dashboard/");
-        setSalaryFeedback(false);
+        accountRouter.push("/pages/expense-tracker/dashboard");
+        setAccountFeedback(false);
       } else {
-        setSalaryFeedback(true);
+        setAccountFeedback(true);
       }
     },
   });
 
   return (
     <section
-      id="salary"
+      id="account"
       className="col-span-4 flex h-[70vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12"
     >
-      <div className="salary-form-wrapper w-[80vw] rounded-md bg-primaryWhite p-4 shadow-md md:w-[60vw] lg:w-[40vw]">
+      <div className="account-form-wrapper w-[80vw] rounded-md bg-primaryWhite p-4 shadow-md md:w-[60vw] lg:w-[40vw]">
         <div className="message-wrapper my-2 text-center">
-          <h2 className="mb-2 capitalize">Set your salary</h2>
-          <p>
-            Enter your current or expected salary, how often you get paid, and
-            the starting date of your payroll.
-          </p>
+          <h2 className="capitalize">Add Account</h2>
         </div>
 
         <form
           action=""
           method="post"
-          onSubmit={formik.handleSubmit}
           className="flex flex-col justify-between p-4"
+          onSubmit={formik.handleSubmit}
         >
           <TextField
-            type="number"
-            id="salary"
-            name="salary"
-            label="Salary ($)"
+            type="text"
+            id="name"
+            name="name"
+            label="Account Name"
             variant="outlined"
             className="my-3"
             required
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.salary == 0 ? "" : formik.values.salary}
+            value={formik.values.name}
           />
-
           <FormControl fullWidth className="my-3">
-            <InputLabel id="frequency-label">Payroll Frequency</InputLabel>
+            <InputLabel id="type-label">Account Type</InputLabel>
             <Select
-              labelId="frequency-label"
-              id="frequency"
-              name="frequency"
-              label="Payroll Frequency"
+              labelId="type-label"
+              id="type"
+              name="type"
+              label="Account Type"
               required
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.frequency}
+              value={formik.values.type}
             >
-              <MenuItem value={"weekly"}>Weekly (once every week)</MenuItem>
-              <MenuItem value={"bi-weekly"}>
-                Bi-Weekly (once every other week)
-              </MenuItem>
-              <MenuItem value={"semi-monthly"}>
-                Semi-Monthly (twice per month)
-              </MenuItem>
-              <MenuItem value={"monthly"}>Monthly (once per month)</MenuItem>
+              <MenuItem value={"checking"}>Checking Account</MenuItem>
+              <MenuItem value={"credit"}>Credit Account</MenuItem>
             </Select>
           </FormControl>
 
           <TextField
-            type="date"
-            id="date"
-            name="date"
+            type="number"
+            id="number"
+            name="number"
+            label="Current Amount"
             variant="outlined"
             className="my-3"
             required
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.date}
+            value={formik.values.number}
           />
 
-          {salaryFeedback ? (
+          {accountFeedback ? (
             <Alert severity="error">
-              Salary update was un-successful. Please try again.
+              Account add was un-successful. Please try again.
             </Alert>
           ) : (
             <div></div>
           )}
-          
+
           <Button
             type="submit"
             variant="contained"
