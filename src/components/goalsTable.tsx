@@ -13,7 +13,7 @@ export default function GoalsTable() {
     <div className="goals-wrapper py-4">
       <h2 className="mb-2">Goals</h2>
       <TableContainer component={Paper}>
-        <Table id="goals-table" aria-label="Goals Table">
+        <Table id="goals-table" aria-label="Goals Table" size="small">
           <TableHead className="bg-gray-300">
             <TableRow>
               <TableCell className="font-bold">Goal</TableCell>

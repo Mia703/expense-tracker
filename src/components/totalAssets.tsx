@@ -66,7 +66,9 @@ export default function TotalAssets() {
         <div className="flex flex-row items-center justify-between border-t-2 border-t-gray-300 p-2">
           <p className="text-gray-400">=</p>
           <p className="font-bold">
-            ${number_formatter.format(totalCash - totalCredit)}
+            {totalCash - totalCredit < 0
+              ? `-$${number_formatter.format((totalCash - totalCredit)*-1)}`
+              : `$${number_formatter.format(totalCash - totalCredit)}`}
           </p>
         </div>
       ) : (
