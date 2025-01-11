@@ -18,7 +18,7 @@ interface AccountItem {
 }
 
 export default function AccountTable() {
-  const [accounts, setAccounts] = useState();
+  const [accounts, setAccounts] = useState("");
   const number_formatter = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -39,25 +39,30 @@ export default function AccountTable() {
 
       if (response.ok) {
         const data = await response.json();
-        // const accounts_array = JSON.parse(data.message);
-        setAccounts(data.message);
+
+        if (data.message == "[]") {
+          setAccounts("");
+        } else {
+          setAccounts(data.message);
+        }
       }
     }
     fetchData();
-  },[]);
+  }, []);
 
   return (
-    <section className="account-table-wrapper">
+    <div className="account-table-wrapper">
       <h2 className="mb-2">Accounts</h2>
 
-      <div className="cash-accounts-wrapper my-2 mb-6">
-        <h3 className="mb-2">Cash Accounts</h3>
+      <div className="cash-accounts-table-wrapper my-4">
         <TableContainer component={Paper}>
-          <Table id="account-table" aria-label="Accounts Table">
+          <Table id="account-table" aria-label="Accounts Table" size="small">
             <TableHead className="bg-gray-300">
               <TableRow>
-                <TableCell className="font-bold">Accounts</TableCell>
-                <TableCell className="text-right font-bold">Amount</TableCell>
+                <TableCell className="font-bold">Cash Accounts</TableCell>
+                <TableCell align="right" className="font-bold">
+                  Amount
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -76,26 +81,31 @@ export default function AccountTable() {
                     .map((item: AccountItem, index: number) => (
                       <TableRow key={index}>
                         <TableCell>{item.acct_name}</TableCell>
-                        <TableCell className="text-right">{`$${number_formatter.format(item.current_balance)}`}</TableCell>
+                        <TableCell align="right">{`$${number_formatter.format(item.current_balance)}`}</TableCell>
                       </TableRow>
                     ));
                 })()
               ) : (
-                <TableRow></TableRow>
+                <TableRow>
+                  <TableCell className="pointer-events-none text-primaryWhite">
+                    empty
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
       </div>
 
-      <div className="credit-account-wrapper my-2">
-        <h3 className="mb-2">Credit Accounts</h3>
+      <div className="credit-account-table-wrapper my-4">
         <TableContainer component={Paper}>
-          <Table id="account-table" aria-label="Accounts Table">
+          <Table id="account-table" aria-label="Accounts Table" size="small">
             <TableHead className="bg-gray-300">
               <TableRow>
-                <TableCell className="font-bold">Accounts</TableCell>
-                <TableCell className="text-right font-bold">Amount</TableCell>
+                <TableCell className="font-bold">Credit Accounts</TableCell>
+                <TableCell align="right" className="font-bold">
+                  Amount
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -114,18 +124,23 @@ export default function AccountTable() {
                     .map((item: AccountItem, index: number) => (
                       <TableRow key={index}>
                         <TableCell>{item.acct_name}</TableCell>
-                        <TableCell className="text-right">{`$${number_formatter.format(item.current_balance)}`}</TableCell>
+                        <TableCell align="right">{`$${number_formatter.format(item.current_balance)}`}</TableCell>
                       </TableRow>
                     ));
                 })()
               ) : (
-                <TableRow></TableRow>
+                <TableRow>
+                  <TableCell className="pointer-events-none text-primaryWhite">
+                    empty
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
       </div>
-      <div className="button-wrapper flex w-full flex-col items-end justify-end">
+
+      <div className="button-wrapper my-2 flex w-full flex-col items-end justify-end">
         <Button
           variant="contained"
           className="bg-primaryBlack font-semibold"
@@ -136,6 +151,6 @@ export default function AccountTable() {
           Add or update account
         </Button>
       </div>
-    </section>
+    </div>
   );
 }

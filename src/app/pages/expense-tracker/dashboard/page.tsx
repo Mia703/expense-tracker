@@ -3,8 +3,8 @@ import AccountTable from "@/components/accountTable";
 import GoalsTable from "@/components/goalsTable";
 import { SalaryTable } from "@/components/salaryTable";
 import SavingsTable from "@/components/savingsTable";
-import { Alert, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
+import TotalAssets from "@/components/totalAssets";
+import { Alert } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [date, setDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [payrollAlert, setPayrollAlert] = useState(false);
-  const salaryRouter = useRouter();
+  
 
   /**
    * Formats a given date and calculates an end date based on the specified frequency.
@@ -144,7 +144,7 @@ export default function Dashboard() {
 
   return (
     <section
-      id="budget"
+      id="dashboard"
       className="col-span-4 grid grid-cols-4 gap-4 md:col-span-6 md:grid-cols-6 lg:col-span-12 lg:grid-cols-12"
     >
       <div className="navigation col-span-4 bg-green-300 md:col-span-6 lg:col-span-2">
@@ -153,6 +153,7 @@ export default function Dashboard() {
 
       <main className="col-span-4 md:col-span-4 lg:col-span-8">
         <div className="date-wrapper font-bold">{date}</div>
+        <AccountTable />
 
         {salary ? <SalaryTable salary={salary} /> : <SalaryTable salary={0} />}
 
@@ -167,25 +168,11 @@ export default function Dashboard() {
           <div className="alert-wrapper"></div>
         )}
 
-        <div className="payroll-alert-wrapper w-full flex flex-col justify-end items-end">
-          <Button
-            variant="contained"
-            className="bg-primaryBlack font-semibold"
-            onClick={() => {
-              salaryRouter.push("/pages/expense-tracker/salary");
-            }}
-          >
-            Update Salary
-          </Button>
-        </div>
-
-        <AccountTable />
-
         <GoalsTable />
         <SavingsTable />
       </main>
-      <div className="col-span-4 bg-blue-300 md:col-span-2 lg:col-span-2">
-        right side content
+      <div className="col-span-4 md:col-span-2 lg:col-span-2">
+        <TotalAssets />
       </div>
     </section>
   );
