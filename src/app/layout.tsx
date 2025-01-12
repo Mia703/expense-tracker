@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import "./globals.css";
+import { StyledEngineProvider } from "@mui/material";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <StyledEngineProvider injectFirst>
       <body
       id="body"
         className={`${notoSans.className} bg-primaryBackground antialiased`}
@@ -30,6 +32,8 @@ export default function RootLayout({
           {children}
         </div>
       </body>
+
+      </StyledEngineProvider>
     </html>
   );
 }
