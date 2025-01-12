@@ -1,5 +1,8 @@
 /** @type {import('postcss-load-config').Config} */
 const config = {
+  corePlugins: {
+    preflight: false,
+  },
   plugins: {
     tailwindcss: {},
   },
