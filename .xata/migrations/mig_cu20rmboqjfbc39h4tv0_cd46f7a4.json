@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu20rmboqjfbc39h4tv0",
+  "parentID": "mig_cu20ri8a9dahcg287e4g",
+  "checksum": "1:cd46f7a42208c1191914b764e4c652a7da06fbf5a36a8c5f21b359b57165183e",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "current_amount",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "goals"
+      }
+    }
+  ]
+}

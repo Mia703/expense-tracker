@@ -9,10 +9,9 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import BackBtn from "@/components/backBtn";
 
 export default function Salary() {
   const [salaryFeedback, setSalaryFeedback] = useState(false);
@@ -133,14 +132,7 @@ export default function Salary() {
             Save
           </Button>
         </form>
-        <div className="back-btn-wrapper">
-          <Link
-            href={"/pages/expense-tracker/dashboard"}
-            className="font-bold text-gray-400"
-          >
-            {<ArrowBackIcon />} Back to Dashboard
-          </Link>
-        </div>
+        <BackBtn />
       </div>
     </section>
   );

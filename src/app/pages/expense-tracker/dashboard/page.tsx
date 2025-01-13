@@ -12,7 +12,6 @@ export default function Dashboard() {
   const [date, setDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [payrollAlert, setPayrollAlert] = useState(false);
-  
 
   /**
    * Formats a given date and calculates an end date based on the specified frequency.
@@ -102,7 +101,7 @@ export default function Dashboard() {
     return `${months[month]} ${day}, ${year} - ${months[end_date.getMonth()]} ${end_date.getDate()}, ${end_date.getFullYear()}`;
   }
 
-  // check if user has a salary
+  // check if user has a salary and is used to format the date
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("/pages/api/salary/getSalary", {
@@ -153,6 +152,7 @@ export default function Dashboard() {
 
       <main className="col-span-4 md:col-span-4 lg:col-span-8">
         <div className="date-wrapper font-bold">{date}</div>
+
         <AccountTable />
 
         {salary ? <SalaryTable salary={salary} /> : <SalaryTable salary={0} />}
@@ -171,7 +171,8 @@ export default function Dashboard() {
         <GoalsTable />
         <SavingsTable />
       </main>
-      <div className="col-span-4 md:col-span-2 lg:col-span-2">
+
+      <div className="col-span-4 md:col-span-2 ">
         <TotalAssets />
       </div>
     </section>

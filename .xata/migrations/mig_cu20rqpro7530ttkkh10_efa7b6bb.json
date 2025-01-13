@@ -1,0 +1,19 @@
+{
+  "id": "mig_cu20rqpro7530ttkkh10",
+  "parentID": "mig_cu20rmboqjfbc39h4tv0",
+  "checksum": "1:efa7b6bb880cccc150a672d1b24f9cafb89255cf127b134bafcbb2e541878efd",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user",
+          "type": "link",
+          "link": {
+            "table": "users"
+          }
+        },
+        "table": "goals"
+      }
+    }
+  ]
+}

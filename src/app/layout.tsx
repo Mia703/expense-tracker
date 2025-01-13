@@ -21,18 +21,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <StyledEngineProvider injectFirst>
-      <body
-      id="body"
-        className={`${notoSans.className} bg-primaryBackground antialiased`}
-      >
-        <div
-          id="main-grid"
-          className="grid grid-cols-4 p-4 md:grid-cols-6 lg:grid-cols-12"
+        <body
+          className={`${notoSans.className} bg-primaryBackground antialiased`}
         >
-          {children}
-        </div>
-      </body>
-
+          <div
+            id="main-grid"
+            className="grid grid-cols-4 p-4 md:grid-cols-6 lg:grid-cols-12"
+          >
+            {children}
+          </div>
+        </body>
       </StyledEngineProvider>
     </html>
   );

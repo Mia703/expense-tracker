@@ -8,11 +8,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import Link from "next/link";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import BackBtn from "@/components/backBtn";
 
 export default function Account() {
   const [accountFeedback, setAccountFeedback] = useState(false);
@@ -54,7 +53,7 @@ export default function Account() {
     >
       <div className="account-form-wrapper w-[80vw] rounded-md bg-primaryWhite p-4 shadow-md md:w-[60vw] lg:w-[40vw]">
         <div className="message-wrapper my-2 text-center">
-          <h2 className="capitalize">Add Account</h2>
+          <h2 className="capitalize">Add or Update Account</h2>
         </div>
 
         <form
@@ -121,14 +120,7 @@ export default function Account() {
             Save
           </Button>
         </form>
-        <div className="back-btn-wrapper">
-          <Link
-            href={"/pages/expense-tracker/dashboard"}
-            className="font-bold text-gray-400"
-          >
-            {<ArrowBackIcon />} Back to Dashboard
-          </Link>
-        </div>
+        <BackBtn />
       </div>
     </section>
   );
