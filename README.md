@@ -61,4 +61,6 @@ https://dev.to/antdp425/react-fetch-data-from-api-with-useeffect-27le
 Preventing Material UI from overwriting TailwindCSS classes
 
 - It's due to the CSS injection order. TailwindCSs comes first and Material UI css comes later and is overwriting all the changes from Tailwind. The way to stop Material UI from overwriting is by inserting `important: "[element-id-here]"` in the `tailwind.config.ts` file with the element id of root element of your `layout.tsx` file. In this case the "root" HTML tag of my file is the `<body>` tag of `layout.tsx` tag.
-- The other option is to use the `StyledEngineProvider` tag from Material UI and tell Material UI to inject their CSS before TailwindCSS.
+- The other, and better, option is to use the `StyledEngineProvider` tag from Material UI and tell Material UI to inject their CSS before TailwindCSS.
+
+Reference: https://youtu.be/QQIfuMlA6TI?si=44iA7y2F3GqJqsr0

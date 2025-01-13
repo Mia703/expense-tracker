@@ -1,0 +1,12 @@
+{
+  "id": "mig_cu20r4ga9dahcg287e2g",
+  "parentID": "mig_cu0t57hro7530ttkk9i0",
+  "checksum": "1:f19d9d0384d4db7c6432b09af9ab9252ebf1b5ec7100b4bcf9377bb24a16313e",
+  "operations": [
+    {
+      "addTable": {
+        "table": "goals"
+      }
+    }
+  ]
+}

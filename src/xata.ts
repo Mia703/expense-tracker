@@ -17,6 +17,7 @@ const tables = [
     revLinks: [
       { column: "user", table: "salary" },
       { column: "user", table: "accounts" },
+      { column: "user", table: "goals" },
     ],
   },
   {
@@ -52,6 +53,25 @@ const tables = [
       { name: "user", type: "link", link: { table: "users" } },
     ],
   },
+  {
+    name: "goals",
+    columns: [
+      { name: "goal", type: "text", notNull: true, defaultValue: "null" },
+      {
+        name: "target_amount",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      {
+        name: "current_amount",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      { name: "user", type: "link", link: { table: "users" } },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -66,10 +86,14 @@ export type SalaryRecord = Salary & XataRecord;
 export type Accounts = InferredTypes["accounts"];
 export type AccountsRecord = Accounts & XataRecord;
 
+export type Goals = InferredTypes["goals"];
+export type GoalsRecord = Goals & XataRecord;
+
 export type DatabaseSchema = {
   users: UsersRecord;
   salary: SalaryRecord;
   accounts: AccountsRecord;
+  goals: GoalsRecord;
 };
 
 const DatabaseClient = buildClient();
