@@ -1,0 +1,13 @@
+{
+  "id": "mig_cu4036ml97ufmn0d3jtg",
+  "parentID": "mig_cu4030el97ufmn0d3jsg",
+  "checksum": "1:60bdb7120d9ff52141e2bda8ac32d6dc9d047ce9d1d30af0ab502360e38e3249",
+  "operations": [
+    {
+      "renameTable": {
+        "newName": "account_contributions",
+        "oldName": "acct_contributions"
+      }
+    }
+  ]
+}

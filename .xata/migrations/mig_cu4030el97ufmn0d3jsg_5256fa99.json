@@ -1,0 +1,19 @@
+{
+  "id": "mig_cu4030el97ufmn0d3jsg",
+  "parentID": "mig_cu402t30dno3bog10hlg",
+  "checksum": "1:5256fa9979c00b0f298616f6b321f482956ba59825435ed76a5397920c748366",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user",
+          "type": "link",
+          "link": {
+            "table": "users"
+          }
+        },
+        "table": "acct_contributions"
+      }
+    }
+  ]
+}

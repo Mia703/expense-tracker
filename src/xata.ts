@@ -18,6 +18,8 @@ const tables = [
       { column: "user", table: "salary" },
       { column: "user", table: "accounts" },
       { column: "user", table: "goals" },
+      { column: "user", table: "account_contributions" },
+      { column: "user", table: "expenses" },
     ],
   },
   {
@@ -72,6 +74,49 @@ const tables = [
       { name: "user", type: "link", link: { table: "users" } },
     ],
   },
+  {
+    name: "account_contributions",
+    columns: [
+      { name: "acct_name", type: "text", notNull: true, defaultValue: "null" },
+      {
+        name: "contribution_amount",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      {
+        name: "balance_after",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      { name: "user", type: "link", link: { table: "users" } },
+    ],
+  },
+  {
+    name: "expenses",
+    columns: [
+      {
+        name: "expense_budgeted",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      {
+        name: "expense_actual",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      { name: "user", type: "link", link: { table: "users" } },
+      {
+        name: "expense_name",
+        type: "text",
+        notNull: true,
+        defaultValue: "null",
+      },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -89,11 +134,19 @@ export type AccountsRecord = Accounts & XataRecord;
 export type Goals = InferredTypes["goals"];
 export type GoalsRecord = Goals & XataRecord;
 
+export type AccountContributions = InferredTypes["account_contributions"];
+export type AccountContributionsRecord = AccountContributions & XataRecord;
+
+export type Expenses = InferredTypes["expenses"];
+export type ExpensesRecord = Expenses & XataRecord;
+
 export type DatabaseSchema = {
   users: UsersRecord;
   salary: SalaryRecord;
   accounts: AccountsRecord;
   goals: GoalsRecord;
+  account_contributions: AccountContributionsRecord;
+  expenses: ExpensesRecord;
 };
 
 const DatabaseClient = buildClient();

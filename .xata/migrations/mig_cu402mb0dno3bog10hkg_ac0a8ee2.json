@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu402mb0dno3bog10hkg",
+  "parentID": "mig_cu402gmit2kpi5f2gdcg",
+  "checksum": "1:ac0a8ee2056cd1a0026a676c9784c2e20a6beee6fc49ff2712e248722ec6c59b",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "contribution_amount",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "acct_contributions"
+      }
+    }
+  ]
+}
