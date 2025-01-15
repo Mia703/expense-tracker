@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu409kul97ufmn0d3k0g",
+  "parentID": "mig_cu409gj0dno3bog10hpg",
+  "checksum": "1:dcac1fb2cb71da50358a60afe0a6f7f7cb7d430fccc1a35a5db8ec57e96c70d9",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "expense_budgeted",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "expenses"
+      }
+    }
+  ]
+}

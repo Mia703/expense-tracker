@@ -52,7 +52,7 @@ export default function AccountTable() {
 
   return (
     <div className="account-table-wrapper">
-      <h2 className="mb-2">Accounts</h2>
+      <h2 className="mb-2">Accounts (Savings & Debit Repayment - 50%)</h2>
 
       <div className="cash-accounts-table-wrapper my-4">
         <TableContainer component={Paper}>

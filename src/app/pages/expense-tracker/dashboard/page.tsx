@@ -1,8 +1,8 @@
 "use client";
 import AccountTable from "@/components/accountTable";
+import ExpensesTable from "@/components/expensesTable";
 import GoalsTable from "@/components/goalsTable";
 import { SalaryTable } from "@/components/salaryTable";
-import SavingsTable from "@/components/savingsTable";
 import TotalAssets from "@/components/totalAssets";
 import { Alert } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -152,11 +152,8 @@ export default function Dashboard() {
 
       <main className="col-span-4 md:col-span-4 lg:col-span-8">
         <div className="date-wrapper font-bold">{date}</div>
-
-        <AccountTable />
-
+        
         {salary ? <SalaryTable salary={salary} /> : <SalaryTable salary={0} />}
-
         {payrollAlert ? (
           <div className="alert-wrapper my-4">
             <Alert severity="error" className="shadow-md">
@@ -169,7 +166,8 @@ export default function Dashboard() {
         )}
 
         <GoalsTable />
-        <SavingsTable />
+        <AccountTable />
+        <ExpensesTable />
       </main>
 
       <div className="col-span-4 md:col-span-2 ">

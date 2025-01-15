@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu402t30dno3bog10hlg",
+  "parentID": "mig_cu402mb0dno3bog10hkg",
+  "checksum": "1:5e8690c17f8e8e42d4c096369c3ae4e5afb2c1b8845885f0b093c632349f1eae",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "balance_after",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "acct_contributions"
+      }
+    }
+  ]
+}

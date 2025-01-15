@@ -1,0 +1,12 @@
+{
+  "id": "mig_cu402d6l97ufmn0d3jrg",
+  "parentID": "mig_cu20rqpro7530ttkkh10",
+  "checksum": "1:21a779a47e7d9f87131c32a352ebfe4f58d8dbd3fc57cab86d2a783c8de5baba",
+  "operations": [
+    {
+      "addTable": {
+        "table": "acct_contributions"
+      }
+    }
+  ]
+}
