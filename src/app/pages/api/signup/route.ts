@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!fullName || !email || !password) {
       return NextResponse.json(
-        { message: "Full name, email, and password is required." },
+        { message: "Signup: Full name, email, and password are required." },
         { status: 400 },
       );
     }
@@ -26,28 +26,28 @@ export async function POST(request: Request) {
 
       if (!addUser) {
         return NextResponse.json(
-          { message: "New user creation un-successful" },
+          { message: "Signup: New user creation un-successful" },
           { status: 401 },
         );
       }
 
       return NextResponse.json(
-        { message: `New user creation successful. id:${addUser.id}` },
+        { message: `Signup: New user creation successful. id:${addUser.id}` },
         { status: 200 },
       );
     }
 
     // else, the user already exists in the database
     return NextResponse.json(
-      { message: "Email already exists in DB." },
+      { message: "Signup: Email already exists." },
       { status: 401 },
     );
   } catch (error) {
-    console.error("Error checking full name and email", error);
+    console.error("Signup: Error checking full name and email", error);
     return NextResponse.json(
       {
         message:
-          "Internal server error. The server has encountered a situation it does not know how to handle.",
+          "Signup: Internal server error. The server has encountered a situation it does not know how to handle.",
       },
       { status: 500 },
     );
