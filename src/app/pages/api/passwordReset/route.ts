@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     }
 
     // else, the user is in the database. Update password.
-    const updatePassword = user.update({ password: newPassword });
+    const updatePassword = await user.update({ password: newPassword });
 
     if (!updatePassword) {
       return NextResponse.json(

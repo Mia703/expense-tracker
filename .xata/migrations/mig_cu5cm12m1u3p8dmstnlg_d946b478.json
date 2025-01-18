@@ -1,0 +1,13 @@
+{
+  "id": "mig_cu5cm12m1u3p8dmstnlg",
+  "parentID": "mig_cu5cm02m1u3p8dmstnkg",
+  "checksum": "1:d946b478d7c39c22a3ffa040219e5c9c41b9a7633aa64e7076554770b01b2ea9",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "frequency",
+        "table": "salary"
+      }
+    }
+  ]
+}

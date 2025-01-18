@@ -1,5 +1,5 @@
 "use client";
-import { FormWrapper } from "@/components/formWrapper";
+import { AuthFormWrapper } from "@/components/authFormWrapper";
 import { Alert, Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
@@ -54,7 +54,7 @@ export default function Signup() {
   });
 
   return (
-    <FormWrapper title="Sign Up">
+    <AuthFormWrapper title="Sign Up">
       <form
         action=""
         method="post"
@@ -134,6 +134,6 @@ export default function Signup() {
           Forgot Password?
         </Link>
       </div>
-    </FormWrapper>
+    </AuthFormWrapper>
   );
 }

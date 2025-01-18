@@ -1,10 +1,13 @@
 import { Paper } from "@mui/material";
 
-interface FormWrapperProps {
+interface AuthFormWrapperProps {
   title: string;
   children: React.ReactNode; // allows for any valid react child
 }
-export const FormWrapper: React.FC<FormWrapperProps> = ({ title, children }) => {
+export const AuthFormWrapper: React.FC<AuthFormWrapperProps> = ({
+  title,
+  children,
+}) => {
   return (
     <section className="col-span-4 flex h-[90vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12">
       <div className="form-wrapper w-full p-4 md:w-[50vw] lg:w-[30vw]">

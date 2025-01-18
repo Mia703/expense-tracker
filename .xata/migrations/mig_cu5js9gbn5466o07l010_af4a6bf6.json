@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu5js9gbn5466o07l010",
+  "parentID": "mig_cu5js03isf7cfs2lmt60",
+  "checksum": "1:af4a6bf6489228845034781294dda28924d1035c0cdda68ecd57ccc5b96419ba",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "subscription_amount",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "subscriptions"
+      }
+    }
+  ]
+}

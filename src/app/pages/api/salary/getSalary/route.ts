@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "User id is required" },
+        { message: "getSalary: User id is required" },
         { status: 400 },
       );
     }
@@ -18,26 +18,25 @@ export async function POST(request: Request) {
       .filter({
         "user.id": id,
       })
-      .sort("xata.createdAt", "desc")
+      .sort("xata.createdAt", "desc") // sort by newest to oldest
       .getFirst();
 
     if (!salary) {
       return NextResponse.json(
-        { message: "Get salary un-successful." },
-        { status: 401 },
+        { message: "getSalary: Get salary un-successful." },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: `Get salary successful. salary:${salary.salary},frequency:${salary.frequency},date:${salary.start_date}` },
+      { message: `getSalary: Get salary successful. salary:${salary.salary}` },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error getting user's current salary:", error);
+    console.error("getSalary: Error getting user's current salary:", error);
     return NextResponse.json(
       {
-        message:
-          "Internal server error. The server has encountered a situation it does not know how to handle.",
+        message: "getSalary: Internal server error.",
       },
       { status: 500 },
     );

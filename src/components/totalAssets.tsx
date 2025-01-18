@@ -55,7 +55,7 @@ export default function TotalAssets() {
   }, []);
 
   return (
-    <Paper elevation={1} className="bg-primaryWhite p-4 my-4">
+    <Paper elevation={1} className="bg-primaryWhite p-4">
       <h2 className="mb-4">Total Assets</h2>
       {totalCash != null && totalCredit != null ? (
         <ProgressBar credit={totalCredit} cash={totalCash} />

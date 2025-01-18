@@ -64,3 +64,60 @@ Preventing Material UI from overwriting TailwindCSS classes
 - The other, and better, option is to use the `StyledEngineProvider` tag from Material UI and tell Material UI to inject their CSS before TailwindCSS.
 
 Reference: https://youtu.be/QQIfuMlA6TI?si=44iA7y2F3GqJqsr0
+
+
+Using Yup
+https://javascript.tutorialink.com/formik-yup-password-strength-validation-with-react/
+
+----
+React TypeScript Error
+
+```txt
+Type '{ children: Element; title: string; }' is not assignable to type 'IntrinsicAttributes & FormWrapperProps'. Property 'children' does not exist on type 'IntrinsicAttributes & FormWrapperProps'.
+```
+
+The error you're encountering suggests that the `FormWrapperProps` interface or type does not include a `children` property. To resolve this issue, you need to ensure that the `FormWrapperProps` type includes the `children` property and any other necessary properties.
+
+Here's an example of how you can define the `FormWrapperProps` type to include the `children` and `title` properties:
+
+```typescript
+import React from 'react';
+
+interface FormWrapperProps {
+  title: string;
+  children: React.ReactNode; // This allows any valid React child
+}
+
+const FormWrapper: React.FC<FormWrapperProps> = ({ title, children }) => {
+  return (
+    <div>
+      <h1>{title}</h1>
+      {children}
+    </div>
+  );
+};
+
+export default FormWrapper;
+```
+
+In this example, `FormWrapperProps` includes both `title` and `children` properties. The `children` property is typed as `React.ReactNode`, which allows any valid React child, including elements, strings, numbers, and arrays.
+
+If you are using a different type for `children`, make sure it matches the type of children you are passing to the component. For instance, if you are passing a specific type of React element, you can define it accordingly:
+
+```typescript
+interface FormWrapperProps {
+  title: string;
+  children: React.ReactElement; // This allows a single React element
+}
+```
+
+Or if you are passing a specific type of component:
+
+```typescript
+interface FormWrapperProps {
+  title: string;
+  children: React.ReactElement<MyCustomComponent>; // This allows a specific type of React element
+}
+```
+
+Make sure to adjust the type definitions based on your specific requirements and the types of children you intend to pass to the `FormWrapper` component.

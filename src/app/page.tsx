@@ -1,6 +1,6 @@
 "use client";
 
-import { FormWrapper } from "@/components/formWrapper";
+import { AuthFormWrapper } from "@/components/authFormWrapper";
 import { Alert, Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
@@ -43,7 +43,7 @@ export default function Home() {
   });
 
   return (
-    <FormWrapper title="login">
+    <AuthFormWrapper title="login">
       <form
         action=""
         method="post"
@@ -84,7 +84,8 @@ export default function Home() {
         {loginFeedback ? (
           <div className="login-feedback-wrapper my-2">
             <Alert severity="error">
-              Login was not successful. Email or password is incorrect, please try again.
+              Login was not successful. Email or password is incorrect, please
+              try again.
             </Alert>
           </div>
         ) : (
@@ -106,6 +107,6 @@ export default function Home() {
           Sign Up
         </Link>
       </div>
-    </FormWrapper>
+    </AuthFormWrapper>
   );
 }

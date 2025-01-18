@@ -1,5 +1,5 @@
 "use client";
-import { FormWrapper } from "@/components/formWrapper";
+import { AuthFormWrapper } from "@/components/authFormWrapper";
 import { Alert, Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
@@ -65,7 +65,7 @@ export default function PasswordReset() {
   });
 
   return (
-    <FormWrapper title="Password Reset">
+    <AuthFormWrapper title="Password Reset">
       <form
         action=""
         method="post"
@@ -127,6 +127,6 @@ export default function PasswordReset() {
           Back to Login
         </Link>
       </div>
-    </FormWrapper>
+    </AuthFormWrapper>
   );
 }

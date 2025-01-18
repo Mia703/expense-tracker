@@ -1,0 +1,14 @@
+{
+  "id": "mig_cu5cm02m1u3p8dmstnkg",
+  "parentID": "mig_cu40fmel97ufmn0d3k30",
+  "checksum": "1:08a76c0ac17b85bd230a16d9f3df7c5462ef8a308b115e70eae379744d4927c9",
+  "operations": [
+    {
+      "renameColumn": {
+        "newName": "payday",
+        "oldName": "start_date",
+        "table": "salary"
+      }
+    }
+  ]
+}
