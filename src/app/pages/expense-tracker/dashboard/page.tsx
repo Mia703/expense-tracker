@@ -1,11 +1,12 @@
 "use client";
+import GoalTable from "@/components/tables/goalTable";
 import LeftToBudget from "@/components/leftToBudget";
-import SalaryTable from "@/components/tables/salaryTable";
 import SubscriptionTable from "@/components/tables/subscriptionTable";
 import TotalAssets from "@/components/totalAssets";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { IconButton } from "@mui/material";
 import { useRouter } from "next/navigation";
+import SalaryTable from "@/components/tables/salaryTable";
 
 export default function Dashboard() {
   const dashboardRouter = useRouter();
@@ -33,6 +34,7 @@ export default function Dashboard() {
 
       <SalaryTable />
       <SubscriptionTable />
+      <GoalTable />
     </section>
   );
 }

@@ -38,7 +38,7 @@ export default function SubscriptionForm() {
       amount: 0,
     },
     onSubmit: async (values) => {
-      const response = await fetch("/pages/api/subscription/addSub", {
+      const response = await fetch("/pages/api/subscription/setSub", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,10 +54,10 @@ export default function SubscriptionForm() {
 
       if (response.ok) {
         setSubFeedback(false);
+        formik.resetForm();
       } else {
         setSubFeedback(true);
       }
-      formik.resetForm();
     },
   });
 

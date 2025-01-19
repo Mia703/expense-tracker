@@ -44,6 +44,7 @@ export default function SalaryTable() {
         setSalary(0);
       }
     }
+
     fetchData();
   }, [displaySalaryForm]);
 
@@ -51,7 +52,7 @@ export default function SalaryTable() {
     <div className="salary-table-wrapper">
       <TableContainer component={Paper} className="table-wrapper my-4">
         <Table aria-label="Salary Table" size="small" id="salary-table">
-          <TableHead className="bg-gray-200">
+          <TableHead className="bg-gray-300">
             <TableRow>
               <TableCell className="font-bold">
                 <p className="font-bold">Salary</p>
@@ -123,4 +124,4 @@ export default function SalaryTable() {
       )}
     </div>
   );
-}
+};

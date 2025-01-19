@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "Id is required to get goal." },
+        { message: "getGoal: Id is required." },
         { status: 400 },
       );
     }
@@ -18,13 +18,13 @@ export async function POST(request: Request) {
       .filter({
         "user.id": id,
       })
-      .sort("goal", "asc")
+      .sort("xata.createdAt", "asc")
       .getAll();
 
     if (!getGoals) {
       return NextResponse.json(
-        { message: "Get goals was un-successful" },
-        { status: 401 },
+        { message: "getGoal: Could not get goals" },
+        { status: 400 },
       );
     }
 
@@ -33,11 +33,10 @@ export async function POST(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error getting user's goal:", error);
+    console.error("", error);
     return NextResponse.json(
       {
-        message:
-          "Internal server error. The server has encountered a situation it does not know how to handle.",
+        message: "Internal server error.",
       },
       { status: 500 },
     );

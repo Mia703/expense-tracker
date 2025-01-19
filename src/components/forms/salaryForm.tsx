@@ -27,7 +27,7 @@ export default function SalaryForm() {
     },
     onSubmit: async (values) => {
       console.log(values);
-      const response = await fetch("/pages/api/salary/addSalary", {
+      const response = await fetch("/pages/api/salary/setSalary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,6 +41,7 @@ export default function SalaryForm() {
 
       if (response.ok) {
         setSalaryFeedback(false);
+        formik.resetForm();
       } else {
         setSalaryFeedback(true);
       }

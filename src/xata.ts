@@ -49,14 +49,9 @@ const tables = [
     name: "goals",
     columns: [
       { name: "goal", type: "text", notNull: true, defaultValue: "null" },
+      { name: "goal_target", type: "float", notNull: true, defaultValue: "0" },
       {
-        name: "target_amount",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      {
-        name: "current_amount",
+        name: "goal_contribution",
         type: "float",
         notNull: true,
         defaultValue: "0",

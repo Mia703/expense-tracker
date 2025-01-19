@@ -82,21 +82,21 @@ export default function SubscriptionTable() {
   }, [displaySubsForm]);
 
   return (
-    <div className="subscription-table-wrapper">
+    <div className="subscription-table-wrapper my-4">
       <TableContainer component={Paper} className="table-wrapper">
-        <div className="table-header-wrapper flex flex-row items-center justify-between rounded-t-md bg-gray-200 p-1 px-2">
+        <div className="table-header-wrapper flex flex-row items-center justify-between rounded-t-md bg-gray-300 p-1 px-2">
           <h3>Subscriptions</h3>
-          <IconButton
+          <IconButton size="small"
             onClick={() => {
               setDisplaySubsForm(true);
             }}
           >
-            <AddIcon />
+            <AddIcon fontSize="small" />
           </IconButton>
         </div>
 
         <Table
-          aria-label="Subscription table"
+          aria-label="Subscription Table"
           size="small"
           id="subscription-table"
         >
@@ -105,13 +105,13 @@ export default function SubscriptionTable() {
               <TableCell>
                 <p className="font-bold">Name</p>
               </TableCell>
-              <TableCell align="center" className="hidden md:table-cell">
+              <TableCell className="hidden md:table-cell">
                 <p className="font-bold">Frequency</p>
               </TableCell>
-              <TableCell align="center">
+              <TableCell>
                 <p className="font-bold">Next Date</p>
               </TableCell>
-              <TableCell align="center">
+              <TableCell>
                 <p className="font-bold">Amount</p>
               </TableCell>
               <TableCell align="right"></TableCell>
@@ -134,23 +134,21 @@ export default function SubscriptionTable() {
                       <TableCell className="capitalize">
                         {item.subscription_name}
                       </TableCell>
-                      <TableCell
-                        align="center"
-                        className="hidden capitalize md:table-cell"
-                      >
+                      <TableCell className="hidden capitalize md:table-cell">
                         {item.subscription_frequency}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell>
                         {formatDate(item.next_payment_date)}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell>
                         ${number_formatter.format(item.subscription_amount)}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
                           size="small"
-                          onClick={() => {
+                          onClick={(event) => {
                             // TODO: read the selected row
+                            console.log(event.target)
                           }}
                         >
                           <DeleteIcon fontSize="small" />
