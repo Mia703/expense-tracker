@@ -50,6 +50,18 @@ export default function SalaryTable() {
 
   return (
     <div className="salary-table-wrapper">
+      <div className="button-wrapper my-2 flex w-full flex-col items-end justify-end">
+        <Button
+          variant="contained"
+          className="bg-primaryBlack font-semibold"
+          onClick={() => {
+            setDisplaySalaryForm(true);
+          }}
+        >
+          Update Salary
+        </Button>
+      </div>
+
       <TableContainer component={Paper} className="table-wrapper my-4">
         <Table aria-label="Salary Table" size="small" id="salary-table">
           <TableHead className="bg-gray-300">
@@ -91,18 +103,6 @@ export default function SalaryTable() {
         </Table>
       </TableContainer>
 
-      <div className="button-wrapper my-2 flex w-full flex-col items-end justify-end">
-        <Button
-          variant="contained"
-          className="bg-primaryBlack font-semibold"
-          onClick={() => {
-            setDisplaySalaryForm(true);
-          }}
-        >
-          Update Salary
-        </Button>
-      </div>
-
       {displaySalaryForm ? (
         <div className="background fixed left-0 top-0 z-10 flex h-screen w-full flex-col items-center justify-center bg-primaryGrey/25 p-8">
           <Paper elevation={3} className="w-full p-4 md:w-[70vw] lg:w-[50vw]">
@@ -124,4 +124,4 @@ export default function SalaryTable() {
       )}
     </div>
   );
-};
+}

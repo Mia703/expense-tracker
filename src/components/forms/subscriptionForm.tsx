@@ -45,7 +45,7 @@ export default function SubscriptionForm() {
         },
         body: JSON.stringify({
           id: localStorage.getItem("user_id"),
-          sub_name: values.name,
+          sub_name: values.name.toLowerCase(),
           sub_frequency: values.frequency,
           sub_date: `${values.date}T00:00:00Z`,
           sub_amount: values.amount,

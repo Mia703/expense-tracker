@@ -58,6 +58,7 @@ export default function GoalTable() {
       <TableContainer component={Paper} className="table-wrapper">
         <div className="table-header-wrapper flex flex-row items-center justify-between rounded-t-md bg-gray-300 p-1 px-2">
           <h3>Goals</h3>
+          <p>Goal contributions are subtracted from your salary.</p>
           <IconButton
             size="small"
             onClick={() => {
@@ -98,7 +99,7 @@ export default function GoalTable() {
 
                 return goals_array.map((item: GoalItem, index: number) => (
                   <TableRow key={index}>
-                    <TableCell>{item.goal}</TableCell>
+                    <TableCell className="capitalize">{item.goal}</TableCell>
                     <TableCell>
                       ${number_formatter.format(item.goal_target)}
                     </TableCell>

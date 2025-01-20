@@ -3,142 +3,169 @@ import { NextResponse } from "next/server";
 
 const xata = getXataClient();
 
+// ------- HELPER FUNCTIONS -------
+async function fetchSalary(id: string) {
+  return xata.db.salary
+    .filter({
+      "user.id": id,
+    })
+    .sort("xata.createdAt", "desc")
+    .getFirst();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function updateSalary(salaryRecord: any, newSalary: number) {
+  return salaryRecord.update({
+    salary: newSalary,
+  });
+}
+
+async function fetchGoal(id: string, goal_name: string) {
+  return xata.db.goals
+    .filter({
+      "user.id": id,
+      goal: goal_name,
+    })
+    .getFirst();
+}
+
+async function createGoal(
+  id: string,
+  goal_name: string,
+  goal_target: number,
+  goal_contribution: number,
+) {
+  return xata.db.goals.create({
+    user: id,
+    goal: goal_name,
+    goal_target: goal_target,
+    goal_contribution: goal_contribution,
+  });
+}
+
+function errorResponse(message: string, status: number) {
+  return NextResponse.json({ message, status });
+}
+
 export async function POST(request: Request) {
   try {
     const { id, goal_name, goal_target, goal_contribution } =
       await request.json();
 
     if (!id || !goal_name || goal_target < 0 || goal_contribution < 0) {
-      return NextResponse.json(
-        {
-          message:
-            "setGoal: Id, goal name, goal target, and goal contribution are required. error:error",
-        },
-        { status: 400 },
+      return errorResponse(
+        "setGoal: Id, goal, goal target, and goal contribution are required",
+        400,
       );
     }
 
-    // get the user's current salary
-    const getSalary = await xata.db.salary
-      .filter({
-        "user.id": id,
-      })
-      .sort("xata.createdAt", "desc") // sort by newest to oldest
-      .getFirst();
-
-    // if user does not have salary, exit
-    if (!getSalary) {
-      return NextResponse.json(
-        {
-          message:
-            "setGoal: Cannot update goal because user does not have salary. error:no-salary",
-        },
-        { status: 400 },
+    // fetch current salary
+    const currentSalary = await fetchSalary(id);
+    if (!currentSalary) {
+      return errorResponse(
+        "setGoal: Salary does not exist. error:no-salary",
+        400,
       );
     }
 
-    // else, user has salary
-    // calculate new salary
-    const newSalary = getSalary.salary - goal_contribution;
+    // fetch goal
+    const currentGoal = await fetchGoal(id, goal_name);
 
-    // if new salary is less than zero, exit
-    if (newSalary < 0) {
-      return NextResponse.json(
-        {
-          message:
-            "setGoal: Cannot update or create goal because salary is zero. error:zero-salary",
-        },
-        { status: 400 },
+    // if current goal does not exist
+    if (!currentGoal) {
+      // create new goal
+      const newGoal = await createGoal(
+        id,
+        goal_name,
+        goal_target,
+        goal_contribution,
       );
-    }
 
-    // get the user's goal
-    const getGoal = await xata.db.goals
-      .filter({
-        "user.id": id,
-        goal: goal_name,
-      })
-      .getFirst();
-
-    // if user's goal does not exist,
-    // create goal
-    if (!getGoal) {
-      const setGoal = await xata.db.goals.create({
-        user: id,
-        goal: goal_name,
-        goal_target: goal_target,
-        goal_contribution: goal_contribution,
-      });
-
-      if (!setGoal) {
-        return NextResponse.json(
-          { message: "setGoal: Could not create goal. error:error" },
-          { status: 400 },
+      if (!newGoal) {
+        return errorResponse(
+          "setGoal: Unable to create goal. error:error",
+          400,
         );
       }
 
-      // update user's salary
-      const updateSalary = getSalary.update({
-        salary: newSalary,
-      });
+      // else, goal creation was successful
+      // calculate the new salary
+      const newSalary = currentSalary.salary - goal_contribution;
 
-      if (!updateSalary) {
-        return NextResponse.json(
-          {
-            message:
-              "setGoal: Goal was created but salary could not be updated. error:error",
-          },
-          { status: 400 },
+      // if the new salary less than zero
+      if (newSalary < 0) {
+        return errorResponse(
+          "setGoal: Salary is less than zero. error:zero-salary",
+          400,
+        );
+      }
+
+      // else, the salary is zero or greater
+      // update the salary
+      const salaryUpdate = await updateSalary(currentSalary, newSalary);
+
+      if (!salaryUpdate) {
+        return errorResponse(
+          "setGoal: Goal created, but salary could not be updated. error:error",
+          400,
         );
       }
 
       return NextResponse.json(
-        { message: "setGoal: Goal created and salary updated." },
+        { message: "setGoal: Goal created and salary updated successfully" },
         { status: 200 },
       );
     }
 
-    const updateGoal = getGoal.update({
+    // else, current goal does exist
+    // determine if goal contribution is the same, if so, just update the target
+    if (currentGoal.goal_contribution === goal_contribution) {
+      const goalUpdate = await currentGoal.update({
+        goal_target: goal_target,
+      });
+
+      if (!goalUpdate) {
+        return errorResponse(
+          "setGoal: Unable to update goal. error:error",
+          400,
+        );
+      }
+
+      return NextResponse.json(
+        { message: "Goal and salary updated successfully" },
+        { status: 200 },
+      );
+    }
+
+    const difference = currentGoal.goal_contribution - goal_contribution;
+    const newSalary = currentSalary.salary + difference;
+
+    // update goal
+    const goalUpdate = await currentGoal.update({
       goal_target: goal_target,
       goal_contribution: goal_contribution,
     });
 
-    if (!updateGoal) {
-      return NextResponse.json(
-        {
-          message: "setGoal: Could not update goal. error:error",
-        },
-        { status: 400 },
+    if (!goalUpdate) {
+      return errorResponse("setGoal: Unable to update goal. error:error", 400);
+    }
+
+    // then update salary
+    const salaryUpdate = await updateSalary(currentSalary, newSalary);
+
+    if (!salaryUpdate) {
+      return errorResponse(
+        "setGoal: Goal updated, but salary could not be updated. error:error",
+        400,
       );
     }
 
-    // update user's salary
-    const updateSalary = getSalary.update({
-      salary: newSalary,
-    });
-
-    if (!updateSalary) {
-      return NextResponse.json(
-        {
-          message:
-            "setGoal: Goal updated but could not update salary. error:error",
-        },
-        { status: 400 },
-      );
-    }
-
-    // else goal and salary are updated
     return NextResponse.json(
-      { message: "setGoal: Salary update and goal update successful" },
+      { message: "Goal and salary updated successfully" },
       { status: 200 },
     );
   } catch (error) {
-    console.error("", error);
-    return NextResponse.json(
-      {
-        message: "Internal server error. error:error",
-      },
-      { status: 500 },
-    );
+    console.error("Error ig setGoal POST", error);
+    return errorResponse("Internal server error", 500);
   }
 }

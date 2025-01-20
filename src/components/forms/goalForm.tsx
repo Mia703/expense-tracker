@@ -51,7 +51,7 @@ export default function GoalForm() {
         },
         body: JSON.stringify({
           id: localStorage.getItem("user_id"),
-          goal_name: values.name,
+          goal_name: values.name.toLowerCase(),
           goal_target: values.target,
           goal_contribution: values.contribution,
         }),
