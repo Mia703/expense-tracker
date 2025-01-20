@@ -1,20 +1,6 @@
 import { getXataClient } from "@/xata";
 import { NextResponse } from "next/server";
 
-// Handle GET requests
-// export async function GET(request: Request) {
-//   return NextResponse.json({ message: "Hello, this is a GET request!" });
-// }
-
-// Handle POST requests
-// export async function POST(request: Request) {
-//   const body = await request.json();
-//   return NextResponse.json({
-//     message: "Hello, this is a POST request!",
-//     data: body,
-//   });
-// }
-
 const xata = getXataClient();
 
 export async function POST(request: Request) {
@@ -25,7 +11,7 @@ export async function POST(request: Request) {
     // check to ensure both the email and password are present
     if (!email || !password) {
       return NextResponse.json(
-        {message: "Email and password are required."},
+        { message: "Login: Email and password are required." },
         { status: 400 },
       );
     }
@@ -39,24 +25,23 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json(
         {
-          message:
-            "Authentication un-successful.",
+          message: "Login: Authentication un-successful.",
         },
         { status: 401 },
       );
     }
-    
+
     // else, the user was found in the database.
     return NextResponse.json(
-      { message: `Authentication successful. id:${user.id}` },
+      { message: `Login: Authentication successful. id:${user.id}` },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error checking email and password:", error);
+    console.error("Login: Error checking email and password:", error);
     return NextResponse.json(
       {
         message:
-          "Internal server error. The server has encountered a situation it does not know how to handle.",
+          "Login: Internal server error. The server has encountered a situation it does not know how to handle.",
       },
       { status: 500 },
     );

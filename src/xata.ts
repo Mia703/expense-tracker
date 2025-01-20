@@ -20,25 +20,15 @@ const tables = [
       { column: "user", table: "goals" },
       { column: "user", table: "account_contributions" },
       { column: "user", table: "expenses" },
+      { column: "user", table: "subscriptions" },
     ],
   },
   {
     name: "salary",
     columns: [
       { name: "salary", type: "float", notNull: true, defaultValue: "0" },
-      {
-        name: "start_date",
-        type: "datetime",
-        notNull: true,
-        defaultValue: "now",
-      },
+      { name: "payday", type: "datetime", notNull: true, defaultValue: "now" },
       { name: "user", type: "link", link: { table: "users" } },
-      {
-        name: "frequency",
-        type: "text",
-        notNull: true,
-        defaultValue: "bi-weekly",
-      },
     ],
   },
   {
@@ -59,14 +49,9 @@ const tables = [
     name: "goals",
     columns: [
       { name: "goal", type: "text", notNull: true, defaultValue: "null" },
+      { name: "goal_target", type: "float", notNull: true, defaultValue: "0" },
       {
-        name: "target_amount",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      {
-        name: "current_amount",
+        name: "goal_contribution",
         type: "float",
         notNull: true,
         defaultValue: "0",
@@ -117,6 +102,36 @@ const tables = [
       },
     ],
   },
+  {
+    name: "subscriptions",
+    columns: [
+      {
+        name: "subscription_name",
+        type: "text",
+        notNull: true,
+        defaultValue: "null",
+      },
+      {
+        name: "subscription_frequency",
+        type: "text",
+        notNull: true,
+        defaultValue: "null",
+      },
+      {
+        name: "next_payment_date",
+        type: "datetime",
+        notNull: true,
+        defaultValue: "now",
+      },
+      {
+        name: "subscription_amount",
+        type: "float",
+        notNull: true,
+        defaultValue: "0",
+      },
+      { name: "user", type: "link", link: { table: "users" } },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -140,6 +155,9 @@ export type AccountContributionsRecord = AccountContributions & XataRecord;
 export type Expenses = InferredTypes["expenses"];
 export type ExpensesRecord = Expenses & XataRecord;
 
+export type Subscriptions = InferredTypes["subscriptions"];
+export type SubscriptionsRecord = Subscriptions & XataRecord;
+
 export type DatabaseSchema = {
   users: UsersRecord;
   salary: SalaryRecord;
@@ -147,6 +165,7 @@ export type DatabaseSchema = {
   goals: GoalsRecord;
   account_contributions: AccountContributionsRecord;
   expenses: ExpensesRecord;
+  subscriptions: SubscriptionsRecord;
 };
 
 const DatabaseClient = buildClient();

@@ -15,7 +15,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ cash, credit }) => {
   return (
     <div className="progress-bar-wrapper">
       {cash == 0 && credit == 0 ? (
-        <p className="text-center">There is no money.</p>
+        <p className="text-center">There are no assets.</p>
       ) : (
         <div>
           <div

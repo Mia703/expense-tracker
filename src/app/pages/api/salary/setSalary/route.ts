@@ -5,39 +5,37 @@ const xata = getXataClient();
 
 export async function POST(request: Request) {
   try {
-    const { id, salary, frequency, date } = await request.json();
+    const { id, salary, payday } = await request.json();
 
-    if (!id || salary < 0 || !frequency || !date) {
+    if (!id || salary < 0 || !payday) {
       return NextResponse.json(
-        { message: "id, salary, frequency, and date are required" },
+        { message: "addSalary: id and payday are required" },
         { status: 400 },
       );
     }
 
     const addSalary = await xata.db.salary.create({
       salary: salary,
-      start_date: date,
       user: id,
-      frequency: frequency,
+      payday: payday,
     });
 
     if (!addSalary) {
       return NextResponse.json(
-        { message: "New salary creation un-successful" },
-        { status: 401 },
+        { message: "addSalary: New salary creation un-successful" },
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
-      { message: "New salary creation successful" },
+      { message: "addSalary: New salary creation successful" },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error submitting init salary info", error);
+    console.error("addSalary: Error submitting init salary info", error);
     return NextResponse.json(
       {
-        message:
-          "Internal server error. The server has encountered a situation it does not know how to handle.",
+        message: "addSalary: Internal server error.",
       },
       { status: 500 },
     );

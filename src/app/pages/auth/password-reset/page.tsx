@@ -1,16 +1,18 @@
 "use client";
-import { Alert, Button, Paper, TextField } from "@mui/material";
+import { AuthFormWrapper } from "@/components/authFormWrapper";
+import { Alert, Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useState } from "react";
+import * as yup from "yup";
 
 export default function PasswordReset() {
-  const [message, setMessage] = useState("");
+  const [resetFeedback, setResetFeedback] = useState<boolean | null>(null);
 
-  function renderPasswordResetFeedback(feedback: string) {
-    if (feedback == "") {
+  function renderFeedback(feedback: boolean | null) {
+    if (feedback == null) {
       return <div></div>;
-    } else if (feedback == "good") {
+    } else if (feedback) {
       return (
         <div className="reset-feedback-wrapper my-2">
           <Alert severity="success">Password reset was successful.</Alert>
@@ -27,14 +29,22 @@ export default function PasswordReset() {
       );
     }
   }
+
+  const passwordResetValidation = yup.object().shape({
+    newPassword: yup
+      .string()
+      .required("New password is required.")
+      .min(6, "Password is less than 6 characters.")
+      .max(12, "Password is more than 12 characters."),
+  });
+
   const formik = useFormik({
     initialValues: {
       email: "",
       newPassword: "",
     },
+    validationSchema: passwordResetValidation,
     onSubmit: async (values) => {
-      // console.log(values);
-
       const response = await fetch("/pages/api/passwordReset", {
         method: "POST",
         headers: {
@@ -47,77 +57,76 @@ export default function PasswordReset() {
       });
 
       if (response.ok) {
-        setMessage("good");
+        setResetFeedback(true);
       } else {
-        setMessage("bad");
+        setResetFeedback(false);
       }
     },
   });
 
   return (
-    <section
-      id="password-reset"
-      className="col-span-4 flex h-[90vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12"
-    >
-      <div
-        id="password-reset-wrapper"
-        className="w-full p-4 md:w-[50vw] lg:w-[30vw]"
+    <AuthFormWrapper title="Password Reset">
+      <form
+        action=""
+        method="post"
+        className="flex flex-col justify-between"
+        onSubmit={formik.handleSubmit}
       >
-        <h1 className="mb-6 text-center">Expense Tracker</h1>
-        <Paper elevation={3} className="p-6">
-          <h2 className="mb-4">Password Reset</h2>
-          <form
-            action=""
-            method="post"
-            className="flex flex-col justify-between"
-            onSubmit={formik.handleSubmit}
-          >
-            <TextField
-              type="email"
-              id="email"
-              label="Email Address"
-              variant="outlined"
-              required
-              className="my-2"
-              onBlur={formik.handleChange}
-              onChange={formik.handleChange}
-              value={formik.values.email}
-            />
-            <TextField
-              type="password"
-              id="newPassword"
-              label="New Password"
-              variant="outlined"
-              required
-              className="my-2"
-              onBlur={formik.handleChange}
-              onChange={formik.handleChange}
-              value={formik.values.newPassword}
-            />
+        <TextField
+          type="email"
+          id="email"
+          label="Email Address"
+          variant="outlined"
+          required
+          className="my-2"
+          onBlur={formik.handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.email}
+        />
 
-            {renderPasswordResetFeedback(message)}
+        <TextField
+          type="password"
+          id="newPassword"
+          label="New Password"
+          variant="outlined"
+          required
+          className="my-2"
+          onBlur={formik.handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.newPassword}
+        />
 
-            <Button
-              type="submit"
-              variant="contained"
-              className="my-4 bg-primaryBlack font-semibold"
-            >
-              Reset Password
-            </Button>
-          </form>
-          <div className="signup-wrapper flex flex-row items-center justify-center">
-            <p>Don&apos;t have an account?</p>
-            <Link href={"/pages/auth/signup"} className="mx-1 font-bold">
-              Sign Up
-            </Link>
-          </div>
-          <div className="login-wrapper text-center">
-            <Link href={"/"} className="font-bold">
-              Back to Login
-            </Link>
-          </div>
-        </Paper>
+        {formik.errors.newPassword ? (
+          <p className="mb-2 ml-4 text-red-500">{formik.errors.newPassword}</p>
+        ) : (
+          <p className="mb-2 ml-4 text-green-600">
+            Password must be between 6 to 12 characters.
+          </p>
+        )}
+
+        {renderFeedback(resetFeedback)}
+
+        <Button
+          type="submit"
+          variant="contained"
+          className="my-4 bg-primaryBlack font-semibold"
+        >
+          Reset Password
+        </Button>
+      </form>
+
+      <div className="signup-wrapper flex flex-row items-center justify-center">
+        <p>Don&apos;t have an account?</p>
+        <Link href={"/pages/auth/signup"} className="mx-1 font-bold">
+          Sign Up
+        </Link>
       </div>
-    </section>
+
+      <div className="login-wrapper text-center">
+        <Link href={"/"} className="font-bold">
+          Back to Login
+        </Link>
+      </div>
+    </AuthFormWrapper>
   );
 }

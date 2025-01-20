@@ -1,0 +1,14 @@
+{
+  "id": "mig_cu6khbobn5466o07l85g",
+  "parentID": "mig_cu6kh6gbn5466o07l84g",
+  "checksum": "1:a69fa7363e966896a0785d011e44b7045cd7ec71f2f133561af408fe68460abf",
+  "operations": [
+    {
+      "renameColumn": {
+        "newName": "goal_contributed",
+        "oldName": "current_amount",
+        "table": "goals"
+      }
+    }
+  ]
+}

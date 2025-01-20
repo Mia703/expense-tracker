@@ -1,0 +1,18 @@
+{
+  "id": "mig_cu5js03isf7cfs2lmt60",
+  "parentID": "mig_cu5jrj8bn5466o07l000",
+  "checksum": "1:a0834aa1500e48ded35b028a190d83f2a3e3b5901f685adbecb2ff86a3c8c285",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "next_payment_date",
+          "type": "datetime",
+          "notNull": true,
+          "defaultValue": "now"
+        },
+        "table": "subscriptions"
+      }
+    }
+  ]
+}

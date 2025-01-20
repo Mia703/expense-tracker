@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!email || !newPassword) {
       return NextResponse.json(
-        { message: "Email and new password are required." },
+        { message: "Password Reset: Email and new password are required." },
         { status: 400 },
       );
     }
@@ -24,29 +24,29 @@ export async function POST(request: Request) {
     // if the user is not in the database
     if (!user) {
       return NextResponse.json(
-        { message: "Authentication un-successful." },
+        { message: "Password Reset: Authentication un-successful." },
         { status: 401 },
       );
     }
 
     // else, the user is in the database. Update password.
-    const updatePassword = user.update({ password: newPassword });
+    const updatePassword = await user.update({ password: newPassword });
 
     if (!updatePassword) {
       return NextResponse.json(
-        { message: "update password un-successful" },
+        { message: "Password Reset: Update password un-successful." },
         { status: 401 },
       );
     }
 
     return NextResponse.json(
-      { message: "update password successful" },
+      { message: "Password Rest: Update password successful." },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error checking email:", error);
+    console.error("Password Reset: Error checking email:", error);
     return NextResponse.json(
-      { message: "Internal server error." },
+      { message: "Password Reset: Internal server error." },
       { status: 500 },
     );
   }

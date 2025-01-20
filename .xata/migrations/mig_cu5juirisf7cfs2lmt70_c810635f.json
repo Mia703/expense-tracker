@@ -1,0 +1,19 @@
+{
+  "id": "mig_cu5juirisf7cfs2lmt70",
+  "parentID": "mig_cu5js9gbn5466o07l010",
+  "checksum": "1:c810635f6643df797dc38cf3efc95295e60dfb9fede5534b07bb97c86a17ea05",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user",
+          "type": "link",
+          "link": {
+            "table": "users"
+          }
+        },
+        "table": "subscriptions"
+      }
+    }
+  ]
+}
