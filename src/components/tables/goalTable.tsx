@@ -58,7 +58,7 @@ export default function GoalTable() {
       <TableContainer component={Paper} className="table-wrapper">
         <div className="table-header-wrapper flex flex-row items-center justify-between rounded-t-md bg-gray-300 p-1 px-2">
           <h3>Goals</h3>
-          <p>Goal contributions are subtracted from your salary.</p>
+          <p className="hidden lg:block">Goal contributions are subtracted from your salary.</p>
           <IconButton
             size="small"
             onClick={() => {
@@ -83,7 +83,7 @@ export default function GoalTable() {
               <TableCell className="hidden md:table-cell">
                 <p className="font-bold">Progress</p>
               </TableCell>
-              <TableCell></TableCell>
+              <TableCell className="trash-cell"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
