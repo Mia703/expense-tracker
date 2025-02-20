@@ -1,46 +1,49 @@
 "use client";
-import GoalTable from "@/components/tables/goalTable";
-import LeftToBudget from "@/components/leftToBudget";
-import SubscriptionTable from "@/components/tables/subscriptionTable";
-import TotalAssets from "@/components/totalAssets";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { IconButton } from "@mui/material";
-import { useRouter } from "next/navigation";
+import BudgetTable from "@/components/tables/budgetTable";
 import SalaryTable from "@/components/tables/salaryTable";
-import AccountTable from "@/components/tables/savingsTable";
-import ExpensesNeedsTable from "@/components/tables/expensesNeedsTable";
-import ExpensesWantsTable from "@/components/tables/expensesWantsTable";
+import TransactionsTable from "@/components/tables/transactionsTables";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Button, IconButton } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  const [user, setUser] = useState<string | null>(null);
   const dashboardRouter = useRouter();
+
+  useEffect(() => {
+    const id = localStorage.getItem('user_id');
+    setUser(id);
+  }, [user])
 
   return (
     <section id="dashboard" className="col-span-4 md:col-span-6 lg:col-start-4">
-      <div className="menu-wrapper flex-cols flex items-center justify-between">
-        <p className="text-lg font-bold">Jan 17, 2025 - Jan 17th 2025</p>
-        <IconButton
-          size="small"
-          aria-label="log out"
-          onClick={() => {
-            localStorage.removeItem("user_id");
-            dashboardRouter.push("/");
-          }}
-        >
-          <LogoutIcon />
-        </IconButton>
-      </div>
-
-      <div className="widget-wrapper my-4 grid grid-cols-2 gap-4">
-        <LeftToBudget />
-        <TotalAssets />
-      </div>
-
-      <SalaryTable />
-      <SubscriptionTable />
-      <GoalTable />
-      <AccountTable />
-      <ExpensesNeedsTable />
-      <ExpensesWantsTable />
+      {user ? (
+        <div className="content">
+          <div className="menu-wrapper flex-cols flex items-center justify-end">
+            <IconButton
+              size="small"
+              aria-label="log out"
+              onClick={() => {
+                localStorage.removeItem("user_id");
+                dashboardRouter.push("/");
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </div>
+          <SalaryTable />
+          <BudgetTable />
+          <TransactionsTable />
+        </div>
+      ) : (
+        <div>
+          <p>Hahah, you&apos;re not logged in. Try again!</p>
+          <Button variant="contained" onClick={() => {
+            dashboardRouter.push('/')
+          }}>Back to Login</Button>
+        </div>
+      )}
     </section>
   );
 }
