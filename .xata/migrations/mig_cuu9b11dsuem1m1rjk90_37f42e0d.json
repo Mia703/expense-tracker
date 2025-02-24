@@ -1,0 +1,19 @@
+{
+  "id": "mig_cuu9b11dsuem1m1rjk90",
+  "parentID": "mig_cuu9at9dsuem1m1rjk80",
+  "checksum": "1:37f42e0d08b77109da19e11ec552b69193153fda6031bccafaa942d4b102bcc4",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user",
+          "type": "link",
+          "link": {
+            "table": "users"
+          }
+        },
+        "table": "budget"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "mig_cutlu4lv5omnnkb7cci0",
+  "parentID": "mig_cutlu3tv5omnnkb7cch0",
+  "checksum": "1:e5cf36d2d3b1c14a3e7022539e5a460dc26ae348683978cd066d93aa65d3c0a5",
+  "operations": [
+    {
+      "removeTable": {
+        "table": "accounts"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "mig_cuu9abmfvuvgoi6atkg0",
+  "parentID": "mig_cutlu5dv5omnnkb7ccj0",
+  "checksum": "1:39326901769668bdd487274cd9ffaa965711088c069c68fa40c30ff3bbf5f846",
+  "operations": [
+    {
+      "addTable": {
+        "table": "budget"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "mig_cuu9bgefvuvgoi6atkh0",
+  "parentID": "mig_cuu9bchdsuem1m1rjkc0",
+  "checksum": "1:a89be6135bffbba25c8c867aab7a39aca0615d08134f4f461c6222050f3be565",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "spent",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "budget"
+      }
+    }
+  ]
+}

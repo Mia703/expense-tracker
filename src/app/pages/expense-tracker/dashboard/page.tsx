@@ -12,9 +12,9 @@ export default function Dashboard() {
   const dashboardRouter = useRouter();
 
   useEffect(() => {
-    const id = localStorage.getItem('user_id');
+    const id = sessionStorage.getItem("user_id");
     setUser(id);
-  }, [user])
+  }, [user]);
 
   return (
     <section id="dashboard" className="col-span-4 md:col-span-6 lg:col-start-4">
@@ -25,7 +25,7 @@ export default function Dashboard() {
               size="small"
               aria-label="log out"
               onClick={() => {
-                localStorage.removeItem("user_id");
+                sessionStorage.removeItem("user_id");
                 dashboardRouter.push("/");
               }}
             >
@@ -39,9 +39,14 @@ export default function Dashboard() {
       ) : (
         <div>
           <p>Hahah, you&apos;re not logged in. Try again!</p>
-          <Button variant="contained" onClick={() => {
-            dashboardRouter.push('/')
-          }}>Back to Login</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              dashboardRouter.push("/");
+            }}
+          >
+            Back to Login
+          </Button>
         </div>
       )}
     </section>

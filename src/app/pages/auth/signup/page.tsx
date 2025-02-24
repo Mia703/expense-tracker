@@ -44,7 +44,7 @@ export default function Signup() {
 
         const data = await response.json();
         const id = data.message.split("id:")[1].trim();
-        localStorage.setItem("user_id", id);
+        sessionStorage.setItem("user_id", id);
 
         signupRouter.push("/pages/expense-tracker/dashboard");
       } else {

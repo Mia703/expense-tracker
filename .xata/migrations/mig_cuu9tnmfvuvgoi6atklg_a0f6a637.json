@@ -1,0 +1,13 @@
+{
+  "id": "mig_cuu9tnmfvuvgoi6atklg",
+  "parentID": "mig_cuu9tmhdsuem1m1rjkng",
+  "checksum": "1:a0f6a63742d239406093c4b3bccd6f346a69cfa5ffe17d617a78a4e7e0c40ae3",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "remaining",
+        "table": "budget"
+      }
+    }
+  ]
+}
