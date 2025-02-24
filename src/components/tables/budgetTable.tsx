@@ -22,6 +22,13 @@ import Form from "../forms/form";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 
+interface Item {
+  category: string;
+  id: string;
+  percentage: number;
+  type: string;
+}
+
 export default function BudgetTable() {
   // const [selectedRow, setSelectedRow] = useState<HTMLTableRowElement | null>(
   //   null,
@@ -33,8 +40,12 @@ export default function BudgetTable() {
   const [budgetFormFeedback, setBudgetFormFeedback] = useState<boolean | null>(
     null,
   );
+  const [savings, setSavings] = useState("");
+  const [expenses, setExpenses] = useState("");
+  const [other, setOther] = useState("");
 
   useEffect(() => {
+    // FIXME: move to separate file
     async function fetchSavingsPercentages() {
       const response = await fetch("/pages/api/budget/percentages", {
         method: "POST",
@@ -49,10 +60,27 @@ export default function BudgetTable() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("savings %", data);
         setSavingsPercentage(
           `Savings Accounts (50%) - ${50 - data.message.total}% available`,
         );
+      }
+    }
+
+    async function fetchSavings() {
+      const response = await fetch("/pages/api/budget/getCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: sessionStorage.getItem("user_id"),
+          type: "savings",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSavings(data.message.data);
       }
     }
 
@@ -76,6 +104,24 @@ export default function BudgetTable() {
       }
     }
 
+    async function fetchExpenses() {
+      const response = await fetch("/pages/api/budget/getCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: sessionStorage.getItem("user_id"),
+          type: "expenses",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExpenses(data.message.data);
+      }
+    }
+
     async function fetchOtherPercentages() {
       const response = await fetch("/pages/api/budget/percentages", {
         method: "POST",
@@ -95,20 +141,40 @@ export default function BudgetTable() {
         );
       }
     }
+
+    async function fetchOther() {
+      const response = await fetch("/pages/api/budget/getCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: sessionStorage.getItem("user_id"),
+          type: "other",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setOther(data.message.data);
+      }
+    }
+
     fetchSavingsPercentages();
     fetchExpensesPercentages();
     fetchOtherPercentages();
-  }, [budgetFormFeedback]);
 
+    fetchSavings();
+    fetchExpenses();
+    fetchOther();
+  }, [budgetFormFeedback, displayBudgetForm]);
 
   function formatFeedback() {
     if (budgetFormFeedback === null) {
-      return <></>
-    }
-    else if (budgetFormFeedback) {
+      return <></>;
+    } else if (budgetFormFeedback) {
       return <Alert severity="success">New budget category saved.</Alert>;
-    }
-    else {
+    } else {
       return (
         <Alert severity="error">
           Unable to save new budget category, please try again.
@@ -186,7 +252,6 @@ export default function BudgetTable() {
           </TableHead>
           <TableBody>
             <TableRow className="bg-gray-300">
-              {/* TODO: should I add a form here instead? */}
               <TableCell className="font-bold md:hidden" colSpan={3}>
                 Savings Accounts - 50%
               </TableCell>
@@ -195,29 +260,46 @@ export default function BudgetTable() {
               </TableCell>
             </TableRow>
 
-            {/* TODO: add map here */}
-            <TableRow>
-              <TableCell className="category italic">Something</TableCell>
-              <TableCell className="percentage hidden md:table-cell">
-                %
-              </TableCell>
-              <TableCell className="budgeted hidden md:table-cell">B</TableCell>
-              <TableCell className="spent hidden md:table-cell">S</TableCell>
-              <TableCell className="remaining">R</TableCell>
-              <TableCell className="trash" align="right">
-                <IconButton
-                  size="small"
-                  onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                    const target = event.target as HTMLElement;
-                    const row = target.closest("tr");
-                    console.log(row)
-                    // setSelectedRow(row);
-                  }}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </TableCell>
-            </TableRow>
+            {savings ? (
+              (() => {
+                let savings_list;
+                try {
+                  savings_list = JSON.parse(savings);
+                } catch (error) {
+                  console.error("savings: invalid JSON object", error);
+                  savings_list = [];
+                }
+
+                return savings_list.map((item: Item, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell className="category italic">
+                      {item.category}
+                    </TableCell>
+                    <TableCell className="percentage hidden md:table-cell">
+                      {item.percentage}%
+                    </TableCell>
+                    <TableCell className="budgeted hidden md:table-cell">
+                      B
+                    </TableCell>
+                    <TableCell className="spent hidden md:table-cell">
+                      S
+                    </TableCell>
+                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="trash" align="right">
+                      <IconButton size="small">
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ));
+              })()
+            ) : (
+              <TableRow>
+                <TableCell className="pointer-events-none text-primaryWhite">
+                  empty
+                </TableCell>
+              </TableRow>
+            )}
 
             <TableRow className="bg-gray-300">
               <TableCell className="font-bold md:hidden" colSpan={3}>
@@ -228,21 +310,46 @@ export default function BudgetTable() {
               </TableCell>
             </TableRow>
 
-            {/* TODO: add map here */}
-            <TableRow>
-              <TableCell className="category italic">Something</TableCell>
-              <TableCell className="percentage hidden md:table-cell">
-                %
-              </TableCell>
-              <TableCell className="budgeted hidden md:table-cell">B</TableCell>
-              <TableCell className="spent hidden md:table-cell">S</TableCell>
-              <TableCell className="remaining">R</TableCell>
-              <TableCell className="trash" align="right">
-                <IconButton size="small">
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </TableCell>
-            </TableRow>
+            {expenses ? (
+              (() => {
+                let expenses_list;
+                try {
+                  expenses_list = JSON.parse(expenses);
+                } catch (error) {
+                  console.error("expenses: invalid JSON object", error);
+                  expenses_list = [];
+                }
+
+                return expenses_list.map((item: Item, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell className="category italic">
+                      {item.category}
+                    </TableCell>
+                    <TableCell className="percentage hidden md:table-cell">
+                      {item.percentage}%
+                    </TableCell>
+                    <TableCell className="budgeted hidden md:table-cell">
+                      B
+                    </TableCell>
+                    <TableCell className="spent hidden md:table-cell">
+                      S
+                    </TableCell>
+                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="trash" align="right">
+                      <IconButton size="small">
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ));
+              })()
+            ) : (
+              <TableRow>
+                <TableCell className="pointer-events-none text-primaryWhite">
+                  empty
+                </TableCell>
+              </TableRow>
+            )}
 
             <TableRow className="bg-gray-300">
               <TableCell className="font-bold md:hidden" colSpan={3}>
@@ -252,6 +359,49 @@ export default function BudgetTable() {
                 Other (Discretionary) - 20%
               </TableCell>
             </TableRow>
+
+            {/* TODO: add map here */}
+
+            {other ? (
+              (() => {
+                let other_list;
+                try {
+                  other_list = JSON.parse(other);
+                } catch (error) {
+                  console.error("other: invalid JSON object", error);
+                  other_list = [];
+                }
+
+                return other_list.map((item: Item, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell className="category italic">
+                      {item.category}
+                    </TableCell>
+                    <TableCell className="percentage hidden md:table-cell">
+                      {item.percentage}%
+                    </TableCell>
+                    <TableCell className="budgeted hidden md:table-cell">
+                      B
+                    </TableCell>
+                    <TableCell className="spent hidden md:table-cell">
+                      S
+                    </TableCell>
+                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="trash" align="right">
+                      <IconButton size="small">
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ));
+              })()
+            ) : (
+              <TableRow>
+                <TableCell className="pointer-events-none text-primaryWhite">
+                  empty
+                </TableCell>
+              </TableRow>
+            )}
 
             <TableRow className="bg-gray-200">
               <TableCell className="category font-bold">Total</TableCell>
@@ -278,7 +428,7 @@ export default function BudgetTable() {
               <IconButton
                 onClick={() => {
                   setDisplayBudgetForm(false);
-                  setBudgetFormFeedback(null)
+                  setBudgetFormFeedback(null);
                 }}
               >
                 <CloseIcon />
