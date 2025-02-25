@@ -34,18 +34,22 @@ export default function BudgetTable() {
   //   null,
   // );
   const [displayBudgetForm, setDisplayBudgetForm] = useState<boolean>(false);
-  const [savingsPercentage, setSavingsPercentage] = useState("");
-  const [expensesPercentage, setExpensesPercentage] = useState("");
-  const [otherPercentage, setOtherPercentage] = useState("");
   const [budgetFormFeedback, setBudgetFormFeedback] = useState<boolean | null>(
     null,
   );
-  const [savings, setSavings] = useState("");
-  const [expenses, setExpenses] = useState("");
-  const [other, setOther] = useState("");
+
+  // tracks the '% of salary' for each category
+  const [savingsPercentage, setSavingsPercentage] = useState<number>(0);
+  const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
+  const [otherPercentage, setOtherPercentage] = useState<number>(0);
+
+  // returns a list of savings, expenses, and other form DB
+  const [savingsList, setSavingsList] = useState<string>("");
+  const [expensesList, setExpensesList] = useState<string>("");
+  const [othersList, setOthersList] = useState("");
 
   useEffect(() => {
-    // FIXME: move to separate file
+    // tracks the '% of salary' for each category
     async function fetchSavingsPercentages() {
       const response = await fetch("/pages/api/budget/percentages", {
         method: "POST",
@@ -60,27 +64,7 @@ export default function BudgetTable() {
 
       if (response.ok) {
         const data = await response.json();
-        setSavingsPercentage(
-          `Savings Accounts (50%) - ${50 - data.message.total}% available`,
-        );
-      }
-    }
-
-    async function fetchSavings() {
-      const response = await fetch("/pages/api/budget/getCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "savings",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSavings(data.message.data);
+        setSavingsPercentage(data.message.total);
       }
     }
 
@@ -98,27 +82,7 @@ export default function BudgetTable() {
 
       if (response.ok) {
         const data = await response.json();
-        setExpensesPercentage(
-          `Fixed Expenses (30%) - ${30 - data.message.total}% available`,
-        );
-      }
-    }
-
-    async function fetchExpenses() {
-      const response = await fetch("/pages/api/budget/getCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "expenses",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setExpenses(data.message.data);
+        setExpensesPercentage(data.message.total);
       }
     }
 
@@ -136,9 +100,48 @@ export default function BudgetTable() {
 
       if (response.ok) {
         const data = await response.json();
-        setOtherPercentage(
-          `Other (20%) - ${20 - data.message.total}% available`,
-        );
+        setOtherPercentage(data.message.total);
+      }
+    }
+
+    fetchSavingsPercentages();
+    fetchExpensesPercentages();
+    fetchOtherPercentages();
+
+    // returns a list of savings, expenses, and other form DB
+    async function fetchSavings() {
+      const response = await fetch("/pages/api/budget/getCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: sessionStorage.getItem("user_id"),
+          type: "savings",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSavingsList(data.message.data);
+      }
+    }
+
+    async function fetchExpenses() {
+      const response = await fetch("/pages/api/budget/getCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: sessionStorage.getItem("user_id"),
+          type: "expenses",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExpensesList(data.message.data);
       }
     }
 
@@ -156,13 +159,9 @@ export default function BudgetTable() {
 
       if (response.ok) {
         const data = await response.json();
-        setOther(data.message.data);
+        setOthersList(data.message.data);
       }
     }
-
-    fetchSavingsPercentages();
-    fetchExpensesPercentages();
-    fetchOtherPercentages();
 
     fetchSavings();
     fetchExpenses();
@@ -173,7 +172,7 @@ export default function BudgetTable() {
     if (budgetFormFeedback === null) {
       return <></>;
     } else if (budgetFormFeedback) {
-      return <Alert severity="success">New budget category saved.</Alert>;
+      return <Alert severity="success">Budget category saved.</Alert>;
     } else {
       return (
         <Alert severity="error">
@@ -190,6 +189,7 @@ export default function BudgetTable() {
       percentage: 0,
     },
     onSubmit: async (values) => {
+      setBudgetFormFeedback(null);
       const response = await fetch("/pages/api/budget/setCategory/", {
         method: "POST",
         headers: {
@@ -210,7 +210,9 @@ export default function BudgetTable() {
         setBudgetFormFeedback(false);
       }
     },
+
   });
+
   return (
     <div className="budget-table-wrapper">
       <TableContainer component={Paper} className="table-wrapper my-4">
@@ -260,17 +262,17 @@ export default function BudgetTable() {
               </TableCell>
             </TableRow>
 
-            {savings ? (
+            {savingsList ? (
               (() => {
-                let savings_list;
+                let list;
                 try {
-                  savings_list = JSON.parse(savings);
+                  list = JSON.parse(savingsList);
                 } catch (error) {
                   console.error("savings: invalid JSON object", error);
-                  savings_list = [];
+                  list = [];
                 }
 
-                return savings_list.map((item: Item, index: number) => (
+                return list.map((item: Item, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="category italic">
                       {item.category}
@@ -278,6 +280,7 @@ export default function BudgetTable() {
                     <TableCell className="percentage hidden md:table-cell">
                       {item.percentage}%
                     </TableCell>
+                    {/* TODO: somehow pass the current salary to do calculations? useState? react portal? */}
                     <TableCell className="budgeted hidden md:table-cell">
                       B
                     </TableCell>
@@ -310,17 +313,17 @@ export default function BudgetTable() {
               </TableCell>
             </TableRow>
 
-            {expenses ? (
+            {expensesList ? (
               (() => {
-                let expenses_list;
+                let list;
                 try {
-                  expenses_list = JSON.parse(expenses);
+                  list = JSON.parse(expensesList);
                 } catch (error) {
                   console.error("expenses: invalid JSON object", error);
-                  expenses_list = [];
+                  list = [];
                 }
 
-                return expenses_list.map((item: Item, index: number) => (
+                return list.map((item: Item, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="category italic">
                       {item.category}
@@ -362,17 +365,17 @@ export default function BudgetTable() {
 
             {/* TODO: add map here */}
 
-            {other ? (
+            {othersList ? (
               (() => {
-                let other_list;
+                let list;
                 try {
-                  other_list = JSON.parse(other);
+                  list = JSON.parse(othersList);
                 } catch (error) {
                   console.error("other: invalid JSON object", error);
-                  other_list = [];
+                  list = [];
                 }
 
-                return other_list.map((item: Item, index: number) => (
+                return list.map((item: Item, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="category italic">
                       {item.category}
@@ -453,21 +456,51 @@ export default function BudgetTable() {
                   value={formik.values.type}
                   onChange={formik.handleChange}
                 >
-                  <FormControlLabel
-                    value={"savings"}
-                    control={<Radio />}
-                    label={savingsPercentage}
-                  />
-                  <FormControlLabel
-                    value={"expenses"}
-                    control={<Radio />}
-                    label={expensesPercentage}
-                  />
-                  <FormControlLabel
-                    value={"other"}
-                    control={<Radio />}
-                    label={otherPercentage}
-                  />
+                  {/* TODO: reference chatgpt -- disable radio button so cannot be selected even if disabled */}
+                  {savingsPercentage >= 50 ? (
+                    <FormControlLabel
+                      value={"savings"}
+                      control={<Radio />}
+                      label={`Savings Accounts (50%) - ${50 - savingsPercentage}% available`}
+                      disabled={true}
+                    />
+                  ) : (
+                    <FormControlLabel
+                      value={"savings"}
+                      control={<Radio />}
+                      label={`Savings Accounts (50%) - ${50 - savingsPercentage}% available`}
+                    />
+                  )}
+
+                  {expensesPercentage >= 30 ? (
+                    <FormControlLabel
+                      value={"expenses"}
+                      control={<Radio />}
+                      label={`Fixed Expenses (30%) - ${30 - expensesPercentage}% available`}
+                      disabled={true}
+                    />
+                  ) : (
+                    <FormControlLabel
+                      value={"expenses"}
+                      control={<Radio />}
+                      label={`Fixed Expenses (30%) - ${30 - expensesPercentage}% available`}
+                    />
+                  )}
+
+                  {otherPercentage >= 20 ? (
+                    <FormControlLabel
+                      value={"other"}
+                      control={<Radio />}
+                      label={`Other (20%) - ${20 - otherPercentage}% available`}
+                      disabled={true}
+                    />
+                  ) : (
+                    <FormControlLabel
+                      value={"other"}
+                      control={<Radio />}
+                      label={`Other (20%) - ${20 - otherPercentage}% available`}
+                    />
+                  )}
                 </RadioGroup>
 
                 <TextField
