@@ -23,16 +23,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 
 interface Item {
-  category: string;
   id: string;
-  percentage: number;
   type: string;
+  category: string;
+  percentage: number;
 }
 
 export default function BudgetTable() {
-  // const [selectedRow, setSelectedRow] = useState<HTMLTableRowElement | null>(
-  //   null,
-  // );
+  const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [displayBudgetForm, setDisplayBudgetForm] = useState<boolean>(false);
   const [budgetFormFeedback, setBudgetFormFeedback] = useState<boolean | null>(
     null,
@@ -48,10 +46,89 @@ export default function BudgetTable() {
   const [expensesList, setExpensesList] = useState<string>("");
   const [othersList, setOthersList] = useState("");
 
+  // returns a list of savings, expenses, and other from DB
+  async function fetchSavings() {
+    const response = await fetch("/pages/api/budget/getCategory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: sessionStorage.getItem("user_id"),
+        type: "savings",
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setSavingsList(data.message.data);
+    }
+  }
+
+  async function fetchExpenses() {
+    const response = await fetch("/pages/api/budget/getCategory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: sessionStorage.getItem("user_id"),
+        type: "expenses",
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setExpensesList(data.message.data);
+    }
+  }
+
+  async function fetchOther() {
+    const response = await fetch("/pages/api/budget/getCategory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: sessionStorage.getItem("user_id"),
+        type: "other",
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setOthersList(data.message.data);
+    }
+  }
+
+  useEffect(() => {
+    async function deleteRow() {
+      const response = await fetch("/pages/api/budget/deleteCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: selectedRow,
+        }),
+      });
+
+      if (response.ok) {
+        fetchSavings();
+        fetchExpenses();
+        fetchOther();
+      }
+      setSelectedRow(null);
+    }
+    if (selectedRow) {
+      deleteRow();
+    }
+  }, [selectedRow]);
+
   useEffect(() => {
     // tracks the '% of salary' for each category
     async function fetchSavingsPercentages() {
-      const response = await fetch("/pages/api/budget/percentages", {
+      const response = await fetch("/pages/api/budget/getPercentages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +146,7 @@ export default function BudgetTable() {
     }
 
     async function fetchExpensesPercentages() {
-      const response = await fetch("/pages/api/budget/percentages", {
+      const response = await fetch("/pages/api/budget/getPercentages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +164,7 @@ export default function BudgetTable() {
     }
 
     async function fetchOtherPercentages() {
-      const response = await fetch("/pages/api/budget/percentages", {
+      const response = await fetch("/pages/api/budget/getPercentages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,61 +184,6 @@ export default function BudgetTable() {
     fetchSavingsPercentages();
     fetchExpensesPercentages();
     fetchOtherPercentages();
-
-    // returns a list of savings, expenses, and other form DB
-    async function fetchSavings() {
-      const response = await fetch("/pages/api/budget/getCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "savings",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSavingsList(data.message.data);
-      }
-    }
-
-    async function fetchExpenses() {
-      const response = await fetch("/pages/api/budget/getCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "expenses",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setExpensesList(data.message.data);
-      }
-    }
-
-    async function fetchOther() {
-      const response = await fetch("/pages/api/budget/getCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "other",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setOthersList(data.message.data);
-      }
-    }
 
     fetchSavings();
     fetchExpenses();
@@ -210,7 +232,6 @@ export default function BudgetTable() {
         setBudgetFormFeedback(false);
       }
     },
-
   });
 
   return (
@@ -273,7 +294,7 @@ export default function BudgetTable() {
                 }
 
                 return list.map((item: Item, index: number) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} className="savings" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
                     </TableCell>
@@ -289,7 +310,21 @@ export default function BudgetTable() {
                     </TableCell>
                     <TableCell className="remaining">R</TableCell>
                     <TableCell className="trash" align="right">
-                      <IconButton size="small">
+                      <IconButton
+                        size="small"
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>,
+                        ) => {
+                          const target = event.target as HTMLElement;
+                          const row = target.closest("tr");
+
+                          if (row) {
+                            setSelectedRow(row.getAttribute("id"));
+                          } else {
+                            setSelectedRow(null);
+                          }
+                        }}
+                      >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </TableCell>
@@ -324,7 +359,7 @@ export default function BudgetTable() {
                 }
 
                 return list.map((item: Item, index: number) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} className="expenses" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
                     </TableCell>
@@ -339,7 +374,21 @@ export default function BudgetTable() {
                     </TableCell>
                     <TableCell className="remaining">R</TableCell>
                     <TableCell className="trash" align="right">
-                      <IconButton size="small">
+                      <IconButton
+                        size="small"
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>,
+                        ) => {
+                          const target = event.target as HTMLElement;
+                          const row = target.closest("tr");
+
+                          if (row) {
+                            setSelectedRow(row.getAttribute("id"));
+                          } else {
+                            setSelectedRow(null);
+                          }
+                        }}
+                      >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </TableCell>
@@ -363,8 +412,6 @@ export default function BudgetTable() {
               </TableCell>
             </TableRow>
 
-            {/* TODO: add map here */}
-
             {othersList ? (
               (() => {
                 let list;
@@ -376,7 +423,7 @@ export default function BudgetTable() {
                 }
 
                 return list.map((item: Item, index: number) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} className="other" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
                     </TableCell>
@@ -391,7 +438,21 @@ export default function BudgetTable() {
                     </TableCell>
                     <TableCell className="remaining">R</TableCell>
                     <TableCell className="trash" align="right">
-                      <IconButton size="small">
+                      <IconButton
+                        size="small"
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>,
+                        ) => {
+                          const target = event.target as HTMLElement;
+                          const row = target.closest("tr");
+
+                          if (row) {
+                            setSelectedRow(row.getAttribute("id"));
+                          } else {
+                            setSelectedRow(null);
+                          }
+                        }}
+                      >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </TableCell>
