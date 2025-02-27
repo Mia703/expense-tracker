@@ -9,30 +9,29 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        {
-          message: "deleteCategory: id is required",
-        },
+        { message: "deleteTransaction: id is required" },
         { status: 400 },
       );
     }
 
-    const deleteCategory = await xata.db.budget.delete(id);
+    console.log("id of selected row", id);
+    const deleteTransaction = await xata.db.transactions.delete(id);
 
-    if (!deleteCategory) {
+    if (!deleteTransaction) {
       return NextResponse.json(
-        { message: "deleteCategory: Unable to delete category" },
+        { message: "deleteTransaction: Could not delete transaction" },
         { status: 400 },
       );
     }
 
     return NextResponse.json(
-      { message: "deleteCategory: Category successfully deleted" },
+      { message: "deleteTransaction: Transaction successfully deleted" },
       { status: 200 },
     );
   } catch (error) {
-    console.error("deleteCategory: Unable to delete category", error);
+    console.error("deleteTransaction: Unable to delete transaction", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "deleteTransaction: Internal server error" },
       { status: 500 },
     );
   }

@@ -18,9 +18,11 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
-import Form from "../forms/form";
+import FormTemplate from "../forms/formTemplate";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
+
+// FIXME: rename budget table; 'type' renamed to 'category' and 'category' renamed to 'name'
 
 interface Item {
   id: string;
@@ -44,7 +46,7 @@ export default function BudgetTable() {
   // returns a list of savings, expenses, and other form DB
   const [savingsList, setSavingsList] = useState<string>("");
   const [expensesList, setExpensesList] = useState<string>("");
-  const [othersList, setOthersList] = useState("");
+  const [othersList, setOthersList] = useState<string>("");
 
   // returns a list of savings, expenses, and other from DB
   async function fetchSavings() {
@@ -486,7 +488,7 @@ export default function BudgetTable() {
       </TableContainer>
 
       {displayBudgetForm ? (
-        <Form>
+        <FormTemplate>
           <Paper elevation={3} className="w-full p-4 md:w-[80vw] lg:w-[50vw]">
             <div className="button-wrapper flex flex-col items-end justify-end">
               <IconButton
@@ -602,7 +604,7 @@ export default function BudgetTable() {
               </form>
             </div>
           </Paper>
-        </Form>
+        </FormTemplate>
       ) : (
         <></>
       )}

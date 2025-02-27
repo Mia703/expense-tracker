@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  FormLabel,
   IconButton,
   Paper,
   Table,
@@ -13,7 +14,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import Form from "../forms/form";
+import FormTemplate from "../forms/formTemplate";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -152,7 +153,7 @@ export default function SalaryTable() {
       </TableContainer>
 
       {displaySalaryForm ? (
-        <Form>
+        <FormTemplate>
           <Paper elevation={3} className="w-full p-4 md:w-[70vw] lg:w-[50vw]">
             <div className="button-wrapper flex flex-col items-end justify-end">
               <IconButton
@@ -186,9 +187,9 @@ export default function SalaryTable() {
                   value={formik.values.salary}
                 />
 
-                <label htmlFor="payday" className="mt-4 font-bold">
+                <FormLabel htmlFor="payday" className="mt-4 font-bold">
                   Payday
-                </label>
+                </FormLabel>
                 <TextField
                   type="date"
                   id="payday"
@@ -211,7 +212,7 @@ export default function SalaryTable() {
               </form>
             </div>
           </Paper>
-        </Form>
+        </FormTemplate>
       ) : (
         <div></div>
       )}
