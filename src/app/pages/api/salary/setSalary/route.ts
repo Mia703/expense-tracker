@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const { id, salary, payday } = await request.json();
 
-		if (!id || salary <= 0 || !payday) {
+    if (!id || salary < 0 || !payday) {
       return NextResponse.json(
         { message: "setSalary: id, salary, payday are required" },
         { status: 400 },
@@ -35,7 +35,14 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { message: "setSalary: Set salary successful" },
+      {
+        message: {
+          message: "setSalary: Set salary successful",
+          id: setSalary.id,
+          salary: setSalary.salary,
+          payday: setSalary.payday,
+        },
+      },
       { status: 200 },
     );
   } catch (error) {

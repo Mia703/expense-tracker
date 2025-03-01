@@ -31,10 +31,11 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: {
-					message: "getSalary: Get salary successful",
-					salary: getSalary.salary,
-					payday: getSalary.payday
-				},
+          message: "getSalary: Get salary successful",
+          id: getSalary.id,
+          salary: getSalary.salary,
+          payday: getSalary.payday,
+        },
       },
       { status: 200 },
     );

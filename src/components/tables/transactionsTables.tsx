@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   FormControlLabel,
   FormLabel,
@@ -21,6 +20,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import FormTemplate from "../forms/formTemplate";
 import { useFormik } from "formik";
+import { formatFeedback } from "@/app/utils/feedback";
+import {
+  formatDate,
+  formatType,
+  getTransactions,
+  setTransaction,
+} from "@/app/utils/transactions";
 
 interface Transaction {
   id: string;
@@ -31,14 +37,12 @@ interface Transaction {
 }
 
 export default function TransactionsTable() {
+  const [transactions, setTransactions] = useState<string>("");
+  const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [displayTransactionForm, setDisplayTransactionForm] = useState(false);
   const [transactionFormFeedback, setTransactionFormFeedback] = useState<
     boolean | null
   >(null);
-
-  const [transactions, setTransactions] = useState<string>("");
-
-  const [selectedRow, setSelectedRow] = useState<string | null>(null);
 
   const number_formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -74,56 +78,13 @@ export default function TransactionsTable() {
 
   useEffect(() => {
     async function fetchTransactions() {
-      const response = await fetch("/pages/api/transactions/getTransaction", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setTransactions(data.message.data);
+      const data = await getTransactions();
+      if (data) {
+        setTransactions(data);
       }
     }
     fetchTransactions();
   }, [displayTransactionForm, transactionFormFeedback, selectedRow]);
-
-  function formatType(category: string) {
-    switch (category) {
-      case "savings":
-        return "Savings Accounts";
-      case "expenses":
-        return "Fixed Expenses";
-      case "other":
-        return "Other";
-      default:
-        return "";
-    }
-  }
-
-  function formatFeedback() {
-    if (transactionFormFeedback === null) {
-      return <></>;
-    } else if (transactionFormFeedback) {
-      return <Alert severity="success">Transaction saved.</Alert>;
-    } else {
-      return (
-        <Alert severity="error">
-          Unable to save new transaction, please try again.
-        </Alert>
-      );
-    }
-  }
-
-  function formatDate(date_string: string) {
-    const date = new Date(date_string);
-    date.setDate(date.getDate() + 1);
-    return date.toLocaleDateString();
-  }
 
   const formik = useFormik({
     initialValues: {
@@ -134,23 +95,16 @@ export default function TransactionsTable() {
     },
     onSubmit: async (values) => {
       setTransactionFormFeedback(null);
-      const response = await fetch("/pages/api/transactions/setTransaction", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          date: `${values.date}T00:00:00Z`,
-          type: values.type,
-          description: values.description,
-          amount: values.amount,
-        }),
-      });
 
-      if (response.ok) {
+      const data = await setTransaction(
+        `${values.date}T00:00:00Z`,
+        values.type,
+        values.description,
+        values.amount,
+      );
+
+      if (data) {
         setTransactionFormFeedback(true);
-        formik.resetForm();
       } else {
         setTransactionFormFeedback(false);
       }
@@ -345,7 +299,13 @@ export default function TransactionsTable() {
                   onChange={formik.handleChange}
                   value={formik.values.amount}
                 />
-                {formatFeedback()}
+
+                {formatFeedback(
+                  transactionFormFeedback,
+                  "Transaction saved",
+                  "Unable to save transaction, please try again.",
+                )}
+
                 <Button
                   type="submit"
                   variant="contained"

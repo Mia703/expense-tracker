@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   FormControlLabel,
   FormLabel,
@@ -21,8 +20,9 @@ import { useEffect, useState } from "react";
 import FormTemplate from "../forms/formTemplate";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
-
-// FIXME: rename budget table; 'type' renamed to 'category' and 'category' renamed to 'name'
+import { useSalary } from "@/app/context/SalaryContext";
+import { formatFeedback } from "@/app/utils/feedback";
+import { getCategories, getPercentage, setCategory } from "@/app/utils/budget";
 
 interface Item {
   id: string;
@@ -32,76 +32,31 @@ interface Item {
 }
 
 export default function BudgetTable() {
+  const { salary } = useSalary();
+
+  const number_formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [displayBudgetForm, setDisplayBudgetForm] = useState<boolean>(false);
   const [budgetFormFeedback, setBudgetFormFeedback] = useState<boolean | null>(
     null,
   );
 
-  // tracks the '% of salary' for each category
+  // tracks the '% of salary' for each category row
   const [savingsPercentage, setSavingsPercentage] = useState<number>(0);
   const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
   const [otherPercentage, setOtherPercentage] = useState<number>(0);
 
-  // returns a list of savings, expenses, and other form DB
+  // returns the list of categories per category type
+  // i.e.: list of 'savings accounts', list of 'fixed expenses', etc.
   const [savingsList, setSavingsList] = useState<string>("");
   const [expensesList, setExpensesList] = useState<string>("");
   const [othersList, setOthersList] = useState<string>("");
-
-  // returns a list of savings, expenses, and other from DB
-  async function fetchSavings() {
-    const response = await fetch("/pages/api/budget/getCategory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: sessionStorage.getItem("user_id"),
-        type: "savings",
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setSavingsList(data.message.data);
-    }
-  }
-
-  async function fetchExpenses() {
-    const response = await fetch("/pages/api/budget/getCategory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: sessionStorage.getItem("user_id"),
-        type: "expenses",
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setExpensesList(data.message.data);
-    }
-  }
-
-  async function fetchOther() {
-    const response = await fetch("/pages/api/budget/getCategory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: sessionStorage.getItem("user_id"),
-        type: "other",
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setOthersList(data.message.data);
-    }
-  }
 
   useEffect(() => {
     async function deleteRow() {
@@ -116,95 +71,74 @@ export default function BudgetTable() {
       });
 
       if (response.ok) {
-        fetchSavings();
-        fetchExpenses();
-        fetchOther();
+        let list = await getCategories("savings");
+        if (list) {
+          setSavingsList(list);
+        }
+
+        list = await getCategories("expenses");
+        if (list) {
+          setExpensesList(list);
+        }
+
+        list = await getCategories("other");
+        if (list) {
+          setOthersList(list);
+        }
       }
       setSelectedRow(null);
     }
+    // if there is a row selected, delete it, else do nothing
     if (selectedRow) {
       deleteRow();
     }
   }, [selectedRow]);
 
   useEffect(() => {
-    // tracks the '% of salary' for each category
-    async function fetchSavingsPercentages() {
-      const response = await fetch("/pages/api/budget/getPercentages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "savings",
-        }),
-      });
+    async function fetchPercentages() {
+      // tracks the '% of salary' for each category
+      let percentage = await getPercentage("savings");
+      if (percentage) {
+        setSavingsPercentage(percentage);
+      } else {
+        setSavingsPercentage(0);
+      }
 
-      if (response.ok) {
-        const data = await response.json();
-        setSavingsPercentage(data.message.total);
+      percentage = await getPercentage("expenses");
+      if (percentage) {
+        setExpensesPercentage(percentage);
+      } else {
+        setExpensesPercentage(0);
+      }
+
+      percentage = await getPercentage("other");
+      if (percentage) {
+        setOtherPercentage(percentage);
+      } else {
+        setOtherPercentage(0);
       }
     }
 
-    async function fetchExpensesPercentages() {
-      const response = await fetch("/pages/api/budget/getPercentages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "expenses",
-        }),
-      });
+    async function fetchCategories() {
+      let list = await getCategories("savings");
+      if (list) {
+        setSavingsList(list);
+      }
 
-      if (response.ok) {
-        const data = await response.json();
-        setExpensesPercentage(data.message.total);
+      list = await getCategories("expenses");
+      if (list) {
+        setExpensesList(list);
+      }
+
+      list = await getCategories("other");
+      if (list) {
+        setOthersList(list);
       }
     }
 
-    async function fetchOtherPercentages() {
-      const response = await fetch("/pages/api/budget/getPercentages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: "other",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setOtherPercentage(data.message.total);
-      }
-    }
-
-    fetchSavingsPercentages();
-    fetchExpensesPercentages();
-    fetchOtherPercentages();
-
-    fetchSavings();
-    fetchExpenses();
-    fetchOther();
+    fetchPercentages();
+    fetchCategories();
   }, [budgetFormFeedback, displayBudgetForm]);
-
-  function formatFeedback() {
-    if (budgetFormFeedback === null) {
-      return <></>;
-    } else if (budgetFormFeedback) {
-      return <Alert severity="success">Budget category saved.</Alert>;
-    } else {
-      return (
-        <Alert severity="error">
-          Unable to save new budget category, please try again.
-        </Alert>
-      );
-    }
-  }
 
   const formik = useFormik({
     initialValues: {
@@ -214,20 +148,14 @@ export default function BudgetTable() {
     },
     onSubmit: async (values) => {
       setBudgetFormFeedback(null);
-      const response = await fetch("/pages/api/budget/setCategory/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          type: values.type,
-          category: values.category,
-          percentage: values.percentage,
-        }),
-      });
 
-      if (response.ok) {
+      const data = await setCategory(
+        values.type,
+        values.category,
+        values.percentage,
+      );
+
+      if (data) {
         setBudgetFormFeedback(true);
         formik.resetForm();
       } else {
@@ -277,11 +205,14 @@ export default function BudgetTable() {
           </TableHead>
           <TableBody>
             <TableRow className="bg-gray-300">
-              <TableCell className="font-bold md:hidden" colSpan={3}>
+              <TableCell className="font-bold md:hidden" colSpan={2}>
                 Savings Accounts - 50%
               </TableCell>
-              <TableCell className="hidden font-bold md:table-cell" colSpan={6}>
+              <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
                 Savings Accounts - 50%
+              </TableCell>
+              <TableCell align="right" className="font-bold">
+                {number_formatter.format(salary.salary * (50 / 100))}
               </TableCell>
             </TableRow>
 
@@ -303,9 +234,10 @@ export default function BudgetTable() {
                     <TableCell className="percentage hidden md:table-cell">
                       {item.percentage}%
                     </TableCell>
-                    {/* TODO: somehow pass the current salary to do calculations? useState? react portal? */}
                     <TableCell className="budgeted hidden md:table-cell">
-                      B
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100),
+                      )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
                       S
@@ -342,11 +274,14 @@ export default function BudgetTable() {
             )}
 
             <TableRow className="bg-gray-300">
-              <TableCell className="font-bold md:hidden" colSpan={3}>
+              <TableCell className="font-bold md:hidden" colSpan={2}>
                 Fixed Expenses - 30%
               </TableCell>
-              <TableCell className="hidden font-bold md:table-cell" colSpan={6}>
+              <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
                 Fixed Expenses - 30%
+              </TableCell>
+              <TableCell align="right" className="font-bold">
+                {number_formatter.format(salary.salary * (30 / 100))}
               </TableCell>
             </TableRow>
 
@@ -369,7 +304,9 @@ export default function BudgetTable() {
                       {item.percentage}%
                     </TableCell>
                     <TableCell className="budgeted hidden md:table-cell">
-                      B
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100),
+                      )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
                       S
@@ -406,11 +343,14 @@ export default function BudgetTable() {
             )}
 
             <TableRow className="bg-gray-300">
-              <TableCell className="font-bold md:hidden" colSpan={3}>
+              <TableCell className="font-bold md:hidden" colSpan={2}>
                 Other (Discretionary) - 20%
               </TableCell>
-              <TableCell className="hidden font-bold md:table-cell" colSpan={6}>
+              <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
                 Other (Discretionary) - 20%
+              </TableCell>
+              <TableCell align="right" className="font-bold">
+                {number_formatter.format(salary.salary * (20 / 100))}
               </TableCell>
             </TableRow>
 
@@ -433,7 +373,9 @@ export default function BudgetTable() {
                       {item.percentage}%
                     </TableCell>
                     <TableCell className="budgeted hidden md:table-cell">
-                      B
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100),
+                      )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
                       S
@@ -592,7 +534,11 @@ export default function BudgetTable() {
                   value={formik.values.percentage}
                 />
 
-                {formatFeedback()}
+                {formatFeedback(
+                  budgetFormFeedback,
+                  "Budget category saved.",
+                  "Unable to save new budget category, please try again.",
+                )}
 
                 <Button
                   type="submit"

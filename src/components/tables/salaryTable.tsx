@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   FormLabel,
   IconButton,
@@ -17,14 +16,18 @@ import { useFormik } from "formik";
 import FormTemplate from "../forms/formTemplate";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSalary } from "@/app/context/SalaryContext";
+import { getSalaryData, setSalaryData } from "@/app/utils/salary";
+import { formatFeedback } from "@/app/utils/feedback";
 
 export default function SalaryTable() {
-  const [salary, setSalary] = useState<number>(0);
-  const [payday, setPayday] = useState<Date | null>(null);
+  const { salary, setSalary } = useSalary(); // global salary context
+
   const [displaySalaryForm, setDisplaySalaryForm] = useState<boolean>(false);
   const [salaryFormFeedback, setSalaryFormFeedback] = useState<null | boolean>(
     null,
   );
+
   const number_formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -33,44 +36,22 @@ export default function SalaryTable() {
   });
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("/pages/api/salary/getSalary", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-        }),
-      });
+    async function fetchSalary() {
+      const data = await getSalaryData();
 
-      if (response.ok) {
-        const data = await response.json();
-        setSalary(data.message.salary as number);
+      if (data) {
+        const payday = new Date(data.message.payday);
+        payday.setDate(payday.getDate() + 1);
 
-        const date = new Date(data.message.payday);
-        date.setDate(date.getDate() + 1); // increase the day by +1
-        setPayday(date);
-      } else {
-        setSalary(0);
+        setSalary({
+          id: data.message.id,
+          salary: data.message.salary,
+          payday,
+        });
       }
     }
-    fetchData();
-  }, [displaySalaryForm]);
-
-  function formatFeedback() {
-    if (salaryFormFeedback == null) {
-      return <></>;
-    } else if (salaryFormFeedback) {
-      return <Alert severity="success">Set salary successful!</Alert>;
-    } else {
-      return (
-        <Alert severity="error">
-          Set salary un-successful, please try again.
-        </Alert>
-      );
-    }
-  }
+    fetchSalary();
+  }, [displaySalaryForm, setSalary]);
 
   const formik = useFormik({
     initialValues: {
@@ -78,22 +59,23 @@ export default function SalaryTable() {
       payday: "",
     },
     onSubmit: async (values) => {
-      const response = await fetch("/pages/api/salary/setSalary", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: sessionStorage.getItem("user_id"),
-          salary: values.salary,
-          payday: `${values.payday}T00:00:00Z`,
-        }),
-      });
+      const data = await setSalaryData(
+        values.salary,
+        `${values.payday}T00:00:00Z`,
+      );
 
-      if (response.ok) {
+      if (data) {
+        const payday = new Date(data.message.payday);
+        payday.setDate(payday.getDate() + 1); // increase the day by +1
+
+        setSalary({
+          id: data.message.id,
+          salary: values.salary,
+          payday,
+        });
+
         formik.resetForm();
         setSalaryFormFeedback(true);
-        setSalary(values.salary);
       } else {
         setSalaryFormFeedback(false);
       }
@@ -126,9 +108,12 @@ export default function SalaryTable() {
               <TableCell className="font-bold" colSpan={2}>
                 Date
               </TableCell>
-              {payday ? (
+
+              {salary ? (
                 <TableCell align="right">
-                  {payday.toLocaleDateString()}
+                  {salary.payday instanceof Date
+                    ? salary.payday.toLocaleDateString()
+                    : salary.payday}
                 </TableCell>
               ) : (
                 <TableCell align="right"></TableCell>
@@ -138,9 +123,14 @@ export default function SalaryTable() {
               <TableCell className="font-bold" colSpan={2}>
                 Total Salary
               </TableCell>
-              <TableCell align="right">
-                {number_formatter.format(salary)}
-              </TableCell>
+
+              {salary ? (
+                <TableCell align="right">
+                  {number_formatter.format(salary.salary)}
+                </TableCell>
+              ) : (
+                <TableCell align="right"></TableCell>
+              )}
             </TableRow>
             <TableRow>
               <TableCell className="font-bold" colSpan={2}>
@@ -201,7 +191,13 @@ export default function SalaryTable() {
                   onChange={formik.handleChange}
                   value={formik.values.payday}
                 />
-                {formatFeedback()}
+
+                {formatFeedback(
+                  salaryFormFeedback,
+                  "Set salary successful!",
+                  "Set salary un-successful, please try again.",
+                )}
+
                 <Button
                   type="submit"
                   variant="contained"
