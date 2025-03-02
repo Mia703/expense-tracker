@@ -19,6 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSalary } from "@/app/context/SalaryContext";
 import { getSalaryData, setSalaryData } from "@/app/utils/salary";
 import { formatFeedback } from "@/app/utils/feedback";
+import { totalTransactions } from "@/app/utils/transactions";
 
 export default function SalaryTable() {
   const { salary, setSalary } = useSalary(); // global salary context
@@ -43,10 +44,19 @@ export default function SalaryTable() {
         const payday = new Date(data.message.payday);
         payday.setDate(payday.getDate() + 1);
 
+        const savings_total = await totalTransactions("savings");
+        const expenses_total = await totalTransactions("expenses");
+        const other_total = await totalTransactions("other");
+
         setSalary({
           id: data.message.id,
           salary: data.message.salary,
           payday,
+          spent: {
+            savings: savings_total,
+            expenses: expenses_total,
+            other: other_total,
+          },
         });
       }
     }
@@ -68,10 +78,19 @@ export default function SalaryTable() {
         const payday = new Date(data.message.payday);
         payday.setDate(payday.getDate() + 1); // increase the day by +1
 
+        const savings_total = await totalTransactions("savings");
+        const expenses_total = await totalTransactions("expenses");
+        const other_total = await totalTransactions("other");
+
         setSalary({
           id: data.message.id,
           salary: values.salary,
           payday,
+          spent: {
+            savings: savings_total,
+            expenses: expenses_total,
+            other: other_total,
+          },
         });
 
         formik.resetForm();
@@ -136,7 +155,14 @@ export default function SalaryTable() {
               <TableCell className="font-bold" colSpan={2}>
                 Remaining
               </TableCell>
-              <TableCell align="right">$0</TableCell>
+              <TableCell align="right">
+                {number_formatter.format(
+                  salary.salary -
+                    (salary.spent.savings +
+                      salary.spent.expenses +
+                      salary.spent.other),
+                )}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

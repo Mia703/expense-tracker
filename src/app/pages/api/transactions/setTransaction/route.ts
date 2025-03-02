@@ -5,9 +5,9 @@ const xata = getXataClient();
 
 export async function POST(request: Request) {
   try {
-    const { id, date, type, description, amount } = await request.json();
+    const { id, date, type, category, description, amount } = await request.json();
 
-    if (!id || !date || !type || !description || amount < 0) {
+    if (!id || !date || !type || !category || !description || amount < 0) {
       return NextResponse.json(
         {
           message:
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       .filter({
         "user.id": id,
         type,
+        category,
         description,
       })
       .getFirst();
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
         user: id,
         date,
         type,
+        category,
         description,
         amount,
       },

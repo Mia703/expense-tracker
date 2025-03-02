@@ -50,6 +50,7 @@ const tables = [
       },
       { name: "amount", type: "float", notNull: true, defaultValue: "0" },
       { name: "user", type: "link", link: { table: "users" } },
+      { name: "category", type: "text", notNull: true, defaultValue: "empty" },
     ],
   },
 ] as const;

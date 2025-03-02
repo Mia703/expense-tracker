@@ -5,13 +5,11 @@ interface Salary {
   id: string;
   salary: number;
   payday: Date | string;
-  // TODO: add this to salary, setSalary
-  // use this to keep track of the total spent per category
-  // spent: {
-  //   savings: number;
-  //   expenses: number;
-  //   other: number;
-  // }
+  spent: {
+    savings: number;
+    expenses: number;
+    other: number;
+  };
 }
 
 interface SalaryContextType {
@@ -29,6 +27,11 @@ export const SalaryProvider: React.FC<{ children: React.ReactNode }> = ({
     id: "",
     salary: 0,
     payday: "NaN",
+    spent: {
+      savings: 0,
+      expenses: 0,
+      other: 0,
+    },
   });
 
   return (

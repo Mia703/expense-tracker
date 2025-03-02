@@ -1,11 +1,15 @@
 import {
   Button,
+  FormControl,
   FormControlLabel,
   FormLabel,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
   Radio,
   RadioGroup,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -27,17 +31,25 @@ import {
   getTransactions,
   setTransaction,
 } from "@/app/utils/transactions";
+import { getCategories } from "@/app/utils/budget";
 
 interface Transaction {
   id: string;
   date: string;
   type: string;
+  category: string;
   description: string;
   amount: number;
 }
 
+interface Category {
+  id: string;
+  category: string;
+}
+
 export default function TransactionsTable() {
   const [transactions, setTransactions] = useState<string>("");
+  const [categoriesList, setCategoriesList] = useState<Category[]>([]);
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [displayTransactionForm, setDisplayTransactionForm] = useState(false);
   const [transactionFormFeedback, setTransactionFormFeedback] = useState<
@@ -83,12 +95,39 @@ export default function TransactionsTable() {
         setTransactions(data);
       }
     }
+
+    async function fetchCategories() {
+      const categories: Category[] = [];
+
+      let list = await getCategories("savings");
+      const savings_list = JSON.parse(list);
+      savings_list.forEach((item: Category) => {
+        categories.push({ id: item.id, category: item.category });
+      });
+
+      list = await getCategories("expenses");
+      const expenses_list = JSON.parse(list);
+      expenses_list.forEach((item: Category) => {
+        categories.push({ id: item.id, category: item.category });
+      });
+
+      list = await getCategories("other");
+      const other_list = JSON.parse(list);
+      other_list.forEach((item: Category) => {
+        categories.push({ id: item.id, category: item.category });
+      });
+
+      setCategoriesList(categories);
+    }
+
     fetchTransactions();
+    fetchCategories();
   }, [displayTransactionForm, transactionFormFeedback, selectedRow]);
 
   const formik = useFormik({
     initialValues: {
       type: "savings",
+      category: "",
       date: "",
       description: "",
       amount: 0,
@@ -99,6 +138,7 @@ export default function TransactionsTable() {
       const data = await setTransaction(
         `${values.date}T00:00:00Z`,
         values.type,
+        values.category,
         values.description,
         values.amount,
       );
@@ -124,7 +164,7 @@ export default function TransactionsTable() {
               <TableCell colSpan={2} className="font-bold md:hidden">
                 Transactions
               </TableCell>
-              <TableCell colSpan={4} className="hidden font-bold md:table-cell">
+              <TableCell colSpan={5} className="hidden font-bold md:table-cell">
                 Transactions
               </TableCell>
               <TableCell align="right">
@@ -141,6 +181,9 @@ export default function TransactionsTable() {
             <TableRow className="bg-gray-200">
               <TableCell className="date hidden font-bold md:table-cell">
                 Date
+              </TableCell>
+              <TableCell className="category hidden font-bold md:table-cell">
+                Type
               </TableCell>
               <TableCell className="category hidden font-bold md:table-cell">
                 Category
@@ -168,8 +211,11 @@ export default function TransactionsTable() {
                     <TableCell className="date hidden md:table-cell">
                       {formatDate(item.date)}
                     </TableCell>
-                    <TableCell className="category hidden md:table-cell">
+                    <TableCell className="type hidden font-bold md:table-cell">
                       {formatType(item.type)}
+                    </TableCell>
+                    <TableCell className="category hidden capitalize italic md:table-cell">
+                      {item.category}
                     </TableCell>
                     <TableCell className="description">
                       {item.description}
@@ -258,6 +304,28 @@ export default function TransactionsTable() {
                     label="Other - 20%"
                   />
                 </RadioGroup>
+
+                <FormControl fullWidth className="my-3">
+                  <InputLabel id="category-label">
+                    Transaction Category
+                  </InputLabel>
+                  <Select
+                    labelId="category-label"
+                    id="category"
+                    name="category"
+                    label="Transaction Category"
+                    required
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.category}
+                  >
+                    {categoriesList.map(({ id, category }) => (
+                      <MenuItem key={id} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
                 <FormLabel htmlFor="date" className="mt-4 font-bold">
                   Date

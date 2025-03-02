@@ -24,7 +24,7 @@ import { useSalary } from "@/app/context/SalaryContext";
 import { formatFeedback } from "@/app/utils/feedback";
 import { getCategories, getPercentage, setCategory } from "@/app/utils/budget";
 
-interface Item {
+interface Category {
   id: string;
   type: string;
   category: string;
@@ -47,12 +47,12 @@ export default function BudgetTable() {
     null,
   );
 
-  // tracks the '% of salary' for each category row
+  // tracks the '% of salary' for each category
   const [savingsPercentage, setSavingsPercentage] = useState<number>(0);
   const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
   const [otherPercentage, setOtherPercentage] = useState<number>(0);
 
-  // returns the list of categories per category type
+  // returns the list of categories per type
   // i.e.: list of 'savings accounts', list of 'fixed expenses', etc.
   const [savingsList, setSavingsList] = useState<string>("");
   const [expensesList, setExpensesList] = useState<string>("");
@@ -206,10 +206,10 @@ export default function BudgetTable() {
           <TableBody>
             <TableRow className="bg-gray-300">
               <TableCell className="font-bold md:hidden" colSpan={2}>
-                Savings Accounts - 50%
+                Type: Savings Accounts - 50%
               </TableCell>
               <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
-                Savings Accounts - 50%
+                Type: Savings Accounts - 50%
               </TableCell>
               <TableCell align="right" className="font-bold">
                 {number_formatter.format(salary.salary * (50 / 100))}
@@ -226,7 +226,7 @@ export default function BudgetTable() {
                   list = [];
                 }
 
-                return list.map((item: Item, index: number) => (
+                return list.map((item: Category, index: number) => (
                   <TableRow key={index} className="savings" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
@@ -275,10 +275,10 @@ export default function BudgetTable() {
 
             <TableRow className="bg-gray-300">
               <TableCell className="font-bold md:hidden" colSpan={2}>
-                Fixed Expenses - 30%
+                Type: Fixed Expenses - 30%
               </TableCell>
               <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
-                Fixed Expenses - 30%
+                Type: Fixed Expenses - 30%
               </TableCell>
               <TableCell align="right" className="font-bold">
                 {number_formatter.format(salary.salary * (30 / 100))}
@@ -295,7 +295,7 @@ export default function BudgetTable() {
                   list = [];
                 }
 
-                return list.map((item: Item, index: number) => (
+                return list.map((item: Category, index: number) => (
                   <TableRow key={index} className="expenses" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
@@ -344,10 +344,10 @@ export default function BudgetTable() {
 
             <TableRow className="bg-gray-300">
               <TableCell className="font-bold md:hidden" colSpan={2}>
-                Other (Discretionary) - 20%
+                Type: Other (Discretionary) - 20%
               </TableCell>
               <TableCell className="hidden font-bold md:table-cell" colSpan={5}>
-                Other (Discretionary) - 20%
+                Type: Other (Discretionary) - 20%
               </TableCell>
               <TableCell align="right" className="font-bold">
                 {number_formatter.format(salary.salary * (20 / 100))}
@@ -364,7 +364,7 @@ export default function BudgetTable() {
                   list = [];
                 }
 
-                return list.map((item: Item, index: number) => (
+                return list.map((item: Category, index: number) => (
                   <TableRow key={index} className="other" id={item.id}>
                     <TableCell className="category italic">
                       {item.category}
@@ -452,7 +452,7 @@ export default function BudgetTable() {
                 onSubmit={formik.handleSubmit}
               >
                 <FormLabel id="type-label" className="font-bold">
-                  Category Type
+                  Type
                 </FormLabel>
                 <RadioGroup
                   aria-labelledby="type-label"
