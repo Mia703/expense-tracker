@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     if (!id || !type) {
       return NextResponse.json(
-        { message: "getCategory: id and type are required" },
+        {
+          message:
+            "getCategory: Cannot complete request, id and type are required",
+        },
         { status: 400 },
       );
     }
@@ -24,17 +27,19 @@ export async function POST(request: Request) {
     if (!getCategory) {
       return NextResponse.json(
         {
-          message: { message: `getCategory: No categories of type ${type}` },
+          message: {
+            message: `getCategory: Cannot complete request, categories of type ${type} do not exist.`,
+          },
           data: [],
         },
-        { status: 400 },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       {
         message: {
-          message: "getCategory: Successfully got categories",
+          message: `getCategory: Request completed, successfully got categories of type ${type}.`,
           data: JSON.stringify(getCategory),
         },
       },
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error(
-      "getCategory: Unable to get category from budget table",
+      "getCategory: Cannot complete request, internal server error.",
       error,
     );
     return NextResponse.json(

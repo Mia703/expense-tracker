@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     if (!email || !newPassword) {
       return NextResponse.json(
-        { message: "Password Reset: Email and new password are required." },
+        {
+          message:
+            "passwordReset: Cannot complete request, email, and new password are required.",
+        },
         { status: 400 },
       );
     }
@@ -17,14 +20,17 @@ export async function POST(request: Request) {
     // query DB to find existing user
     const user = await xata.db.users
       .filter({
-        email: email,
+        email,
       })
       .getFirst();
 
     // if the user is not in the database
     if (!user) {
       return NextResponse.json(
-        { message: "Password Reset: Authentication un-successful." },
+        {
+          message:
+            "passwordReset: Cannot complete request, authentication unsuccessful.",
+        },
         { status: 401 },
       );
     }
@@ -34,19 +40,29 @@ export async function POST(request: Request) {
 
     if (!updatePassword) {
       return NextResponse.json(
-        { message: "Password Reset: Update password un-successful." },
-        { status: 401 },
+        {
+          message:
+            "passwordReset: Cannot complete request, cannot find current record.",
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: "Password Rest: Update password successful." },
+      {
+        message:
+          "passwordReset: Request completed, update password successful.",
+      },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Password Reset: Error checking email:", error);
+    console.error(
+      "passwordReset: Cannot complete request, internal server error.",
+      error,
+    );
+
     return NextResponse.json(
-      { message: "Password Reset: Internal server error." },
+      { message: "passwordReset: Internal server error." },
       { status: 500 },
     );
   }

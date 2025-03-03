@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     if (!id) {
       return NextResponse.json(
         {
-          message: "deleteCategory: id is required",
+          message: "deleteCategory: Cannot complete request, id is required.",
         },
         { status: 400 },
       );
@@ -20,17 +20,25 @@ export async function POST(request: Request) {
 
     if (!deleteCategory) {
       return NextResponse.json(
-        { message: "deleteCategory: Unable to delete category" },
-        { status: 400 },
+        {
+          message: `deleteCategory: Cannot complete request, unable to find category with id: ${id}.`,
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: "deleteCategory: Category successfully deleted" },
+      {
+        message:
+          "deleteCategory: Request completed, category successfully deleted.",
+      },
       { status: 200 },
     );
   } catch (error) {
-    console.error("deleteCategory: Unable to delete category", error);
+    console.error(
+      "deleteCategory: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

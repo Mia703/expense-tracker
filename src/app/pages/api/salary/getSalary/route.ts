@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "getSalary: id is required" },
+        { message: "getSalary: Cannot complete request, id is required." },
         { status: 400 },
       );
     }
@@ -23,15 +23,18 @@ export async function POST(request: Request) {
 
     if (!getSalary) {
       return NextResponse.json(
-        { message: "getSalary: No salary saved" },
-        { status: 400 },
+        {
+          message:
+            "getSalary: Cannot complete request, cannot find most recent salary record.",
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       {
         message: {
-          message: "getSalary: Get salary successful",
+          message: "getSalary: Request completed, get salary successful.",
           id: getSalary.id,
           salary: getSalary.salary,
           payday: getSalary.payday,
@@ -40,7 +43,10 @@ export async function POST(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("getSalary: Error getting salary", error);
+    console.error(
+      "getSalary: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
       { message: "getSalary: Internal server error." },
       { status: 500 },

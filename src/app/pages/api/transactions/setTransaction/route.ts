@@ -5,13 +5,14 @@ const xata = getXataClient();
 
 export async function POST(request: Request) {
   try {
-    const { id, date, type, category, description, amount } = await request.json();
+    const { id, date, type, category, description, amount } =
+      await request.json();
 
     if (!id || !date || !type || !category || !description || amount < 0) {
       return NextResponse.json(
         {
           message:
-            "setTransaction: id, date, type, description, and amount are required",
+            "setTransaction: Cannot complete request, id, date, type, description, and amount are required.",
         },
         { status: 400 },
       );
@@ -39,18 +40,31 @@ export async function POST(request: Request) {
     );
 
     if (!setTransaction) {
+      const item = {
+        user_id: id,
+        date,
+        type,
+        category,
+        description,
+        amount,
+      };
       return NextResponse.json(
-        { message: "setTransaction: Unable to create or update transaction" },
-        { status: 400 },
+        {
+          message: `setTransaction: Cannot complete request, unable to set or update transaction. ${item}`,
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: "setTransaction: Created or updated transaction" },
+      {
+        message:
+          "setTransaction: Request completed, set or updated transaction.",
+      },
       { status: 200 },
     );
   } catch (error) {
-    console.error("setTransaction: Could not set transaction", error);
+    console.error("setTransaction: Internal server error.", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 400 },

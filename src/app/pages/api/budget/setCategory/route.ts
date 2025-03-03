@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message:
-            "setCategory: id, type, category, and percentage are required",
+            "setCategory: Cannot complete request, id, type, category, and percentage are required.",
         },
         { status: 400 },
       );
@@ -33,8 +33,17 @@ export async function POST(request: Request) {
     });
 
     if (!setCategory) {
+      const item = {
+        user_id: id,
+        type,
+        category,
+        percentage,
+      };
+
       return NextResponse.json(
-        { message: "setCategory: Unable to create new category" },
+        {
+          message: `setCategory: Cannot complete request, unable to create new category. ${item}`,
+        },
         { status: 400 },
       );
     }
@@ -42,16 +51,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: {
-          message: "setCategory: New category created",
+          message:
+            "setCategory: Request completed, new category successfully created.",
           type,
           category,
           percentage,
         },
       },
-      { status: 200 },
+      { status: 201 },
     );
   } catch (error) {
-    console.error("setCategory: Unable to create new budget category", error);
+    console.error(
+      "setCategory: Cannot complete request, internal server error",
+      error,
+    );
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

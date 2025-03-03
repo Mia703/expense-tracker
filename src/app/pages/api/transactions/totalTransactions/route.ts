@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     if (!id || !type) {
       return NextResponse.json(
-        { message: "totalTransactions: id and type are required" },
+        {
+          message:
+            "totalTransactions: Cannot complete request, id and type are required.",
+        },
         { status: 400 },
       );
     }
@@ -25,8 +28,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: {
-            message:
-              "totalTransactions: There are no transactions for this type",
+            message: `totalTransactions: Cannot complete request, there are no transactions of type ${type}.`,
             data: 0,
           },
         },
@@ -42,8 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: {
-          message:
-            "totalTransactions: Successfully got transaction total by type",
+          message: `totalTransactions: Request completed, successfully got total transaction of type ${type}`,
           data: total,
         },
       },

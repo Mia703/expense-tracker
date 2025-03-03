@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     if (!id || !type) {
       return NextResponse.json(
-        { message: "percentages: id and type is required" },
+        {
+          message:
+            "getPercentages: Cannot complete request, id and type are required.",
+        },
         { status: 400 },
       );
     }
@@ -21,28 +24,37 @@ export async function POST(request: Request) {
       })
       .getMany();
 
-    let total = 0;
     if (!getPercentages) {
-      return NextResponse.json({
-        message: {
-          message: "getPercentages: Unable to get percentages",
-          total,
+      return NextResponse.json(
+        {
+          message: {
+            message: `getPercentages: Cannot complete request, unable to get percentages of type ${type}.`,
+            total: 0,
+          },
         },
-      });
+        { status: 404 },
+      );
     }
 
+    let total = 0;
     getPercentages.forEach((item) => {
       total += item.percentage;
     });
 
-    return NextResponse.json({
-      message: {
-        message: "getPercentages: Get percentage total successful",
-        total,
+    return NextResponse.json(
+      {
+        message: {
+          message: `getPercentages: Request completed, total percentage of type ${type} successfully calculated.`,
+          total,
+        },
       },
-    });
+      { status: 200 },
+    );
   } catch (error) {
-    console.error("percentages: Error getting total budget percentages", error);
+    console.error(
+      "getPercentages: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

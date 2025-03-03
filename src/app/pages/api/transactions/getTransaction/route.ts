@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "getTransaction: id is required" },
+        { message: "getTransaction: Cannot complete request, id is required." },
         { status: 400 },
       );
     }
@@ -17,32 +17,33 @@ export async function POST(request: Request) {
     const getTransaction = await xata.db.transactions
       .filter({
         "user.id": id,
-      }).sort('date', 'desc')
+      })
+      .sort("date", "desc")
       .getMany();
 
     if (!getTransaction) {
       return NextResponse.json(
         {
           message: {
-            message: "No transactions",
+            message: "getTransaction: Request completed, no transactions.",
             data: [],
           },
         },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
     return NextResponse.json(
       {
         message: {
-          message: "getTransaction: Got transactions",
+          message: "getTransaction: Request completed, got transactions.",
           data: JSON.stringify(getTransaction),
         },
       },
       { status: 200 },
     );
   } catch (error) {
-    console.error("getTransaction: Unable to get transactions", error);
+    console.error("getTransaction: Internal server error.", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

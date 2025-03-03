@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     if (!id || salary < 0 || !payday) {
       return NextResponse.json(
-        { message: "setSalary: id, salary, payday are required" },
+        {
+          message:
+            "setSalary: Cannot complete request, id, salary, and payday are required.",
+        },
         { status: 400 },
       );
     }
@@ -29,15 +32,19 @@ export async function POST(request: Request) {
 
     if (!setSalary) {
       return NextResponse.json(
-        { message: "setSalary: Set salary un-successful" },
-        { status: 400 },
+        {
+          message:
+            "setSalary: Cannot complete request, cannot find current salary record.",
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       {
         message: {
-          message: "setSalary: Set salary successful",
+          message:
+            "setSalary: Request completed, set or update salary successful.",
           id: setSalary.id,
           salary: setSalary.salary,
           payday: setSalary.payday,
@@ -46,7 +53,10 @@ export async function POST(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("setSalary: Error setting salary:", error);
+    console.error(
+      "setSalary: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
       {
         message: "setSalary: Internal server error.",
