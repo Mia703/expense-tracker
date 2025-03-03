@@ -22,7 +22,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import { useSalary } from "@/app/context/SalaryContext";
 import { formatFeedback } from "@/app/utils/feedback";
-import { getCategories, getPercentage, setCategory } from "@/app/utils/budget";
+import {
+  deleteCategory,
+  getCategories,
+  getPercentage,
+  setCategory,
+} from "@/app/utils/budget";
 
 interface Category {
   id: string;
@@ -60,33 +65,27 @@ export default function BudgetTable() {
 
   useEffect(() => {
     async function deleteRow() {
-      const response = await fetch("/pages/api/budget/deleteCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: selectedRow,
-        }),
-      });
+      if (selectedRow) {
+        const data = await deleteCategory(selectedRow);
 
-      if (response.ok) {
-        let list = await getCategories("savings");
-        if (list) {
-          setSavingsList(list);
-        }
+        if (data) {
+          let list = await getCategories("savings");
+          if (list) {
+            setSavingsList(list);
+          }
 
-        list = await getCategories("expenses");
-        if (list) {
-          setExpensesList(list);
-        }
+          list = await getCategories("expenses");
+          if (list) {
+            setExpensesList(list);
+          }
 
-        list = await getCategories("other");
-        if (list) {
-          setOthersList(list);
+          list = await getCategories("other");
+          if (list) {
+            setOthersList(list);
+          }
         }
+        setSelectedRow(null);
       }
-      setSelectedRow(null);
     }
     // if there is a row selected, delete it, else do nothing
     if (selectedRow) {

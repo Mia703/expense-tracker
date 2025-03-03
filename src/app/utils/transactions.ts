@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @param type the type of transaction
  * @returns returns the full name for the type
  */
@@ -17,7 +17,7 @@ export function formatType(type: string) {
 }
 
 /**
- * 
+ *
  * @param date_string the date as a string
  * @returns the date as a string, in the format  MM/DD/YYYY
  */
@@ -50,7 +50,7 @@ export async function getTransactions() {
 }
 
 /**
- * 
+ *
  * @param date the transaction occurred
  * @param type "savings", "expenses", or "other"
  * @param category one of the categories listed in the budget table
@@ -87,7 +87,29 @@ export async function setTransaction(
 }
 
 /**
- * 
+ *
+ * @param rowId the id of the row to be deleted
+ * @returns true if row is deleted, else false
+ */
+export async function deleteTransaction(rowId: string) {
+  const response = await fetch("/pages/api/transactions/deleteTransaction", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: rowId,
+    }),
+  });
+
+  if (response.ok) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ *
  * @param type "savings", "expenses", or "other"
  * @returns the total spent under tha type
  */

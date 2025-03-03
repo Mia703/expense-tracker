@@ -26,6 +26,7 @@ import FormTemplate from "../forms/formTemplate";
 import { useFormik } from "formik";
 import { formatFeedback } from "@/app/utils/feedback";
 import {
+  deleteTransaction,
   formatDate,
   formatType,
   getTransactions,
@@ -65,21 +66,12 @@ export default function TransactionsTable() {
 
   useEffect(() => {
     async function deleteRow() {
-      const response = await fetch(
-        "/pages/api/transactions/deleteTransaction",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: selectedRow,
-          }),
-        },
-      );
+      if (selectedRow) {
+        const data = await deleteTransaction(selectedRow);
 
-      if (response.ok) {
-        setSelectedRow(null);
+        if (data) {
+          setSelectedRow(null);
+        }
       }
     }
 

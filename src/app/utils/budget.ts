@@ -66,3 +66,25 @@ export async function setCategory(type: string, category: string, percentage: nu
   } 
 	return null;
 }
+
+/**
+ * 
+ * @param rowId the id of the row to be deleted
+ * @returns true if successfully deleted row, else false
+ */
+export async function deleteCategory (rowId: string) {
+  const response = await fetch("/pages/api/budget/deleteCategory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: rowId,
+    }),
+  });
+
+  if (response.ok) {
+    return true;
+  }
+  return false;
+}
