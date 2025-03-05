@@ -27,7 +27,7 @@ export async function getPercentage(type: string) {
  * @param type defines which category to search under, 'savings', 'expenses', or 'other'
  * @returns JSON string of list of categories or returns null
  */
-export async function getCategories(type: string) {
+export async function getCategoriesByType(type: string) {
 	const response = await fetch("/pages/api/budget/getCategory", {
     method: "POST",
     headers: {

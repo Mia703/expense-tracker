@@ -24,10 +24,11 @@ import { useSalary } from "@/app/context/SalaryContext";
 import { formatFeedback } from "@/app/utils/feedback";
 import {
   deleteCategory,
-  getCategories,
+  getCategoriesByType,
   getPercentage,
   setCategory,
 } from "@/app/utils/budget";
+import { useCategoryTotal } from "@/app/context/CategoryTotalContext";
 
 interface Category {
   id: string;
@@ -37,7 +38,8 @@ interface Category {
 }
 
 export default function BudgetTable() {
-  const { salary } = useSalary();
+  const { salary } = useSalary(); // global salary variable
+  const { categoryTotals } = useCategoryTotal();
 
   const number_formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -63,23 +65,38 @@ export default function BudgetTable() {
   const [expensesList, setExpensesList] = useState<string>("");
   const [othersList, setOthersList] = useState<string>("");
 
+  function displayCategory(id: string) {
+    const category = categoryTotals.find((item) => item.id === id);
+
+    if (category) {
+      return category;
+    }
+
+    return {
+      id: "",
+      type: "",
+      category: "string;",
+      spent: 0,
+    };
+  }
+
   useEffect(() => {
     async function deleteRow() {
       if (selectedRow) {
         const data = await deleteCategory(selectedRow);
 
         if (data) {
-          let list = await getCategories("savings");
+          let list = await getCategoriesByType("savings");
           if (list) {
             setSavingsList(list);
           }
 
-          list = await getCategories("expenses");
+          list = await getCategoriesByType("expenses");
           if (list) {
             setExpensesList(list);
           }
 
-          list = await getCategories("other");
+          list = await getCategoriesByType("other");
           if (list) {
             setOthersList(list);
           }
@@ -119,17 +136,17 @@ export default function BudgetTable() {
     }
 
     async function fetchCategories() {
-      let list = await getCategories("savings");
+      let list = await getCategoriesByType("savings");
       if (list) {
         setSavingsList(list);
       }
 
-      list = await getCategories("expenses");
+      list = await getCategoriesByType("expenses");
       if (list) {
         setExpensesList(list);
       }
 
-      list = await getCategories("other");
+      list = await getCategoriesByType("other");
       if (list) {
         setOthersList(list);
       }
@@ -239,9 +256,14 @@ export default function BudgetTable() {
                       )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
-                      S
+                      {number_formatter.format(displayCategory(item.id)?.spent)}
                     </TableCell>
-                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="remaining">
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100) -
+                          displayCategory(item.id)?.spent,
+                      )}
+                    </TableCell>
                     <TableCell className="trash" align="right">
                       <IconButton
                         size="small"
@@ -308,9 +330,14 @@ export default function BudgetTable() {
                       )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
-                      S
+                      {number_formatter.format(displayCategory(item.id)?.spent)}
                     </TableCell>
-                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="remaining">
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100) -
+                          displayCategory(item.id)?.spent,
+                      )}
+                    </TableCell>
                     <TableCell className="trash" align="right">
                       <IconButton
                         size="small"
@@ -377,9 +404,14 @@ export default function BudgetTable() {
                       )}
                     </TableCell>
                     <TableCell className="spent hidden md:table-cell">
-                      S
+                      {number_formatter.format(displayCategory(item.id)?.spent)}
                     </TableCell>
-                    <TableCell className="remaining">R</TableCell>
+                    <TableCell className="remaining">
+                      {number_formatter.format(
+                        salary.salary * (item.percentage / 100) -
+                          displayCategory(item.id)?.spent,
+                      )}
+                    </TableCell>
                     <TableCell className="trash" align="right">
                       <IconButton
                         size="small"
@@ -409,21 +441,6 @@ export default function BudgetTable() {
                 </TableCell>
               </TableRow>
             )}
-
-            <TableRow className="bg-gray-200">
-              <TableCell className="category font-bold">Total</TableCell>
-              <TableCell className="percentage hidden font-bold md:table-cell">
-                %
-              </TableCell>
-              <TableCell className="budgeted hidden font-bold md:table-cell">
-                B
-              </TableCell>
-              <TableCell className="spent hidden font-bold md:table-cell">
-                S
-              </TableCell>
-              <TableCell className="remaining font-bold">R</TableCell>
-              <TableCell className="trash" align="right"></TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

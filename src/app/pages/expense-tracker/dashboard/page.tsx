@@ -1,4 +1,5 @@
 "use client";
+import { CategoryTotalProvider } from "@/app/context/CategoryTotalContext";
 import { SalaryProvider } from "@/app/context/SalaryContext";
 import BudgetTable from "@/components/tables/budgetTable";
 import SalaryTable from "@/components/tables/salaryTable";
@@ -19,42 +20,44 @@ export default function Dashboard() {
 
   return (
     <SalaryProvider>
-      <section
-        id="dashboard"
-        className="col-span-4 md:col-span-6 lg:col-span-8 lg:col-start-3"
-      >
-        {user ? (
-          <div className="content">
-            <div className="menu-wrapper flex-cols flex items-center justify-end">
-              <IconButton
-                size="small"
-                aria-label="log out"
+      <CategoryTotalProvider>
+        <section
+          id="dashboard"
+          className="col-span-4 md:col-span-6 lg:col-span-8 lg:col-start-3"
+        >
+          {user ? (
+            <div className="content">
+              <div className="menu-wrapper flex-cols flex items-center justify-end">
+                <IconButton
+                  size="small"
+                  aria-label="log out"
+                  onClick={() => {
+                    sessionStorage.removeItem("user_id");
+                    dashboardRouter.push("/");
+                  }}
+                >
+                  <LogoutIcon />
+                </IconButton>
+              </div>
+              <SalaryTable />
+              <BudgetTable />
+              <TransactionsTable />
+            </div>
+          ) : (
+            <div>
+              <p>Hahah, you&apos;re not logged in. Try again!</p>
+              <Button
+                variant="contained"
                 onClick={() => {
-                  sessionStorage.removeItem("user_id");
                   dashboardRouter.push("/");
                 }}
               >
-                <LogoutIcon />
-              </IconButton>
+                Back to Login
+              </Button>
             </div>
-            <SalaryTable />
-            <BudgetTable />
-            <TransactionsTable />
-          </div>
-        ) : (
-          <div>
-            <p>Hahah, you&apos;re not logged in. Try again!</p>
-            <Button
-              variant="contained"
-              onClick={() => {
-                dashboardRouter.push("/");
-              }}
-            >
-              Back to Login
-            </Button>
-          </div>
-        )}
-      </section>
+          )}
+        </section>
+      </CategoryTotalProvider>
     </SalaryProvider>
   );
 }

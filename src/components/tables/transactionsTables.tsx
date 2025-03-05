@@ -31,8 +31,10 @@ import {
   formatType,
   getTransactions,
   setTransaction,
+  totalByCategory,
 } from "@/app/utils/transactions";
-import { getCategories } from "@/app/utils/budget";
+import { getCategoriesByType } from "@/app/utils/budget";
+import { useCategoryTotal } from "@/app/context/CategoryTotalContext";
 
 interface Transaction {
   id: string;
@@ -45,12 +47,15 @@ interface Transaction {
 
 interface Category {
   id: string;
+  type: string;
   category: string;
+  spent: number;
 }
 
 export default function TransactionsTable() {
   const [transactions, setTransactions] = useState<string>("");
-  const [categoriesList, setCategoriesList] = useState<Category[]>([]);
+  const { categoryTotals, setCategoryTotals } = useCategoryTotal(); // global categories list
+
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [displayTransactionForm, setDisplayTransactionForm] = useState(false);
   const [transactionFormFeedback, setTransactionFormFeedback] = useState<
@@ -89,32 +94,39 @@ export default function TransactionsTable() {
     }
 
     async function fetchCategories() {
-      const categories: Category[] = [];
+      async function processCategoriesList(type: string) {
+        const list = await getCategoriesByType(type);
+        const parsedList: Category[] = JSON.parse(list);
 
-      let list = await getCategories("savings");
-      const savings_list = JSON.parse(list);
-      savings_list.forEach((item: Category) => {
-        categories.push({ id: item.id, category: item.category });
-      });
+        const categoryPromises = parsedList.map(async (item) => {
+          const total = await totalByCategory(item.category);
+          return {
+            id: item.id,
+            type: item.type,
+            category: item.category,
+            spent: total,
+          };
+        });
 
-      list = await getCategories("expenses");
-      const expenses_list = JSON.parse(list);
-      expenses_list.forEach((item: Category) => {
-        categories.push({ id: item.id, category: item.category });
-      });
+        // waits for all promises to resolve before returning data
+        return Promise.all(categoryPromises);
+      }
 
-      list = await getCategories("other");
-      const other_list = JSON.parse(list);
-      other_list.forEach((item: Category) => {
-        categories.push({ id: item.id, category: item.category });
-      });
+      const savings = await processCategoriesList("savings");
+      const expenses = await processCategoriesList("expenses");
+      const other = await processCategoriesList("other");
 
-      setCategoriesList(categories);
+      setCategoryTotals([...savings, ...expenses, ...other]);
     }
 
     fetchTransactions();
     fetchCategories();
-  }, [displayTransactionForm, transactionFormFeedback, selectedRow]);
+  }, [
+    displayTransactionForm,
+    transactionFormFeedback,
+    selectedRow,
+    setCategoryTotals,
+  ]);
 
   const formik = useFormik({
     initialValues: {
@@ -311,11 +323,15 @@ export default function TransactionsTable() {
                     onChange={formik.handleChange}
                     value={formik.values.category}
                   >
-                    {categoriesList.map(({ id, category }) => (
-                      <MenuItem key={id} value={category}>
-                        {category}
-                      </MenuItem>
-                    ))}
+                    {categoryTotals ? (
+                      categoryTotals.map((item) => (
+                        <MenuItem key={item.id} value={item.category}>
+                          {item.category}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="empty">Empty</MenuItem>
+                    )}
                   </Select>
                 </FormControl>
 
