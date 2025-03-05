@@ -121,3 +121,5 @@ interface FormWrapperProps {
 ```
 
 Make sure to adjust the type definitions based on your specific requirements and the types of children you intend to pass to the `FormWrapper` component.
+
+Expense Tracker © 2025 to Present Year by Amya Moore is licensed under CC BY-NC-SA 4.0.

@@ -1,6 +1,7 @@
 "use client";
 import { CategoryTotalProvider } from "@/app/context/CategoryTotalContext";
 import { SalaryProvider } from "@/app/context/SalaryContext";
+import Attribution from "@/components/attribution";
 import BudgetTable from "@/components/tables/budgetTable";
 import SalaryTable from "@/components/tables/salaryTable";
 import TransactionsTable from "@/components/tables/transactionsTables";
@@ -56,6 +57,7 @@ export default function Dashboard() {
               </Button>
             </div>
           )}
+          <Attribution />
         </section>
       </CategoryTotalProvider>
     </SalaryProvider>

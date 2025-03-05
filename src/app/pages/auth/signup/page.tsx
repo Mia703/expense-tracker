@@ -1,4 +1,5 @@
 "use client";
+import Attribution from "@/components/attribution";
 import { AuthFormWrapper } from "@/components/authFormWrapper";
 import { Alert, Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
@@ -134,6 +135,7 @@ export default function Signup() {
           Forgot Password?
         </Link>
       </div>
+      <Attribution />
     </AuthFormWrapper>
   );
 }
