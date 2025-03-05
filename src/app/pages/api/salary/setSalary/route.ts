@@ -9,33 +9,57 @@ export async function POST(request: Request) {
 
     if (!id || salary < 0 || !payday) {
       return NextResponse.json(
-        { message: "addSalary: id and payday are required" },
+        {
+          message:
+            "setSalary: Cannot complete request, id, salary, and payday are required.",
+        },
         { status: 400 },
       );
     }
 
-    const addSalary = await xata.db.salary.create({
-      salary: salary,
+    const findSalary = await xata.db.salary
+      .filter({
+        "user.id": id,
+        payday,
+      })
+      .getFirst();
+
+    const setSalary = await xata.db.salary.createOrUpdate(findSalary?.id, {
+      salary,
       user: id,
-      payday: payday,
+      payday,
     });
 
-    if (!addSalary) {
+    if (!setSalary) {
       return NextResponse.json(
-        { message: "addSalary: New salary creation un-successful" },
-        { status: 400 },
+        {
+          message:
+            "setSalary: Cannot complete request, cannot find current salary record.",
+        },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: "addSalary: New salary creation successful" },
+      {
+        message: {
+          message:
+            "setSalary: Request completed, set or update salary successful.",
+          id: setSalary.id,
+          salary: setSalary.salary,
+          payday: setSalary.payday,
+        },
+      },
       { status: 200 },
     );
   } catch (error) {
-    console.error("addSalary: Error submitting init salary info", error);
+    console.error(
+      "setSalary: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
       {
-        message: "addSalary: Internal server error.",
+        message: "setSalary: Internal server error.",
       },
       { status: 500 },
     );

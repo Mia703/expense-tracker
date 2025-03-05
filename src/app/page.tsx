@@ -33,7 +33,9 @@ export default function Home() {
 
         const data = await response.json();
         const id = data.message.split("id:")[1].trim();
-        localStorage.setItem("user_id", id);
+        // data stored in sessionStorage is specific to a particular tab or window
+        // and is cleared when the tab or window is closed
+        sessionStorage.setItem("user_id", id);
 
         loginRouter.push("/pages/expense-tracker/dashboard");
       } else {
@@ -62,24 +64,25 @@ export default function Home() {
           value={formik.values.email}
         />
 
-        <Link
-          href={"/pages/auth/password-reset/"}
-          className="text-right text-sm font-bold"
-        >
-          Forgot Password?
-        </Link>
 
         <TextField
           id="password"
           label="Password"
           variant="outlined"
           required
-          className="my-2 mb-4"
+          className="my-2"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
           value={formik.values.password}
           type="password"
         />
+      
+        <Link
+          href={"/pages/auth/password-reset/"}
+          className="text-right text-sm font-bold"
+        >
+          Forgot Password?
+        </Link>
 
         {loginFeedback ? (
           <div className="login-feedback-wrapper my-2">

@@ -9,35 +9,46 @@ export async function POST(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "getSalary: User id is required" },
+        { message: "getSalary: Cannot complete request, id is required." },
         { status: 400 },
       );
     }
 
-    const salary = await xata.db.salary
+    const getSalary = await xata.db.salary
       .filter({
         "user.id": id,
       })
       .sort("xata.createdAt", "desc") // sort by newest to oldest
       .getFirst();
 
-    if (!salary) {
+    if (!getSalary) {
       return NextResponse.json(
-        { message: "getSalary: Get salary un-successful." },
+        {
+          message:
+            "getSalary: Cannot complete request, cannot find most recent salary record.",
+        },
         { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: `getSalary: Get salary successful. salary:${salary.salary}` },
+      {
+        message: {
+          message: "getSalary: Request completed, get salary successful.",
+          id: getSalary.id,
+          salary: getSalary.salary,
+          payday: getSalary.payday,
+        },
+      },
       { status: 200 },
     );
   } catch (error) {
-    console.error("getSalary: Error getting user's current salary:", error);
+    console.error(
+      "getSalary: Cannot complete request, internal server error.",
+      error,
+    );
     return NextResponse.json(
-      {
-        message: "getSalary: Internal server error.",
-      },
+      { message: "getSalary: Internal server error." },
       { status: 500 },
     );
   }

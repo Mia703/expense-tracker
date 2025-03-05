@@ -1,0 +1,18 @@
+{
+  "id": "mig_cuu9ao9dsuem1m1rjk70",
+  "parentID": "mig_cuu9abmfvuvgoi6atkg0",
+  "checksum": "1:0f1ba96b8e2cf31a64fcf0c803980e6f0f8cf74272fb9741a8b2e2cbc980d121",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "type",
+          "type": "text",
+          "notNull": true,
+          "defaultValue": "empty"
+        },
+        "table": "budget"
+      }
+    }
+  ]
+}

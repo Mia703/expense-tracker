@@ -11,7 +11,10 @@ export async function POST(request: Request) {
     // check to ensure both the email and password are present
     if (!email || !password) {
       return NextResponse.json(
-        { message: "Login: Email and password are required." },
+        {
+          message:
+            "login: Cannot complete request, email and password are required.",
+        },
         { status: 400 },
       );
     }
@@ -25,7 +28,8 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json(
         {
-          message: "Login: Authentication un-successful.",
+          message:
+            "login: Cannot complete request, authentication unsuccessful.",
         },
         { status: 401 },
       );
@@ -33,11 +37,11 @@ export async function POST(request: Request) {
 
     // else, the user was found in the database.
     return NextResponse.json(
-      { message: `Login: Authentication successful. id:${user.id}` },
+      { message: `login: Authentication successful. User id:${user.id}` },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Login: Error checking email and password:", error);
+    console.error("login: Internal server error.", error);
     return NextResponse.json(
       {
         message:

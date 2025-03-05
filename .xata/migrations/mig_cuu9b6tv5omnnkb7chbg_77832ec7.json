@@ -1,0 +1,18 @@
+{
+  "id": "mig_cuu9b6tv5omnnkb7chbg",
+  "parentID": "mig_cuu9b11dsuem1m1rjk90",
+  "checksum": "1:77832ec7226bbd5ea097bf9999f88c5f8e4675fd559921e2fe766d4309eb145b",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "percentage",
+          "type": "float",
+          "notNull": true,
+          "defaultValue": "0"
+        },
+        "table": "budget"
+      }
+    }
+  ]
+}

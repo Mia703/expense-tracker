@@ -1,0 +1,12 @@
+{
+  "id": "mig_cutltvtv5omnnkb7ccf0",
+  "parentID": "mig_cu6lasgbn5466o07l8fg",
+  "checksum": "1:b5d1f6fb7f5e6ce6aba521fcf03e972cf1d98dc0cd1148d85675c7c40250a1b1",
+  "operations": [
+    {
+      "removeTable": {
+        "table": "subscriptions"
+      }
+    }
+  ]
+}

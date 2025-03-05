@@ -10,7 +10,7 @@ export const AuthFormWrapper: React.FC<AuthFormWrapperProps> = ({
 }) => {
   return (
     <section className="col-span-4 flex h-[90vh] flex-col items-center justify-center md:col-span-6 lg:col-span-12">
-      <div className="form-wrapper w-full p-4 md:w-[50vw] lg:w-[30vw]">
+      <div className="form-wrapper w-full p-4 md:w-[60vw] lg:w-[50vw]">
         <h1 className="mb-6 text-center">Expense Tracker</h1>
         <Paper elevation={3} className="p-6">
           <h2 className="mb-4 capitalize">{title}</h2>

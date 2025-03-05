@@ -16,11 +16,8 @@ const tables = [
     ],
     revLinks: [
       { column: "user", table: "salary" },
-      { column: "user", table: "accounts" },
-      { column: "user", table: "goals" },
-      { column: "user", table: "account_contributions" },
-      { column: "user", table: "expenses" },
-      { column: "user", table: "subscriptions" },
+      { column: "user", table: "budget" },
+      { column: "user", table: "transactions" },
     ],
   },
   {
@@ -32,104 +29,28 @@ const tables = [
     ],
   },
   {
-    name: "accounts",
+    name: "budget",
     columns: [
-      { name: "acct_name", type: "text", notNull: true, defaultValue: "null" },
-      { name: "acct_type", type: "text", notNull: true, defaultValue: "null" },
-      {
-        name: "current_balance",
-        type: "float",
-        notNull: true,
-        defaultValue: "0.00",
-      },
+      { name: "type", type: "text", notNull: true, defaultValue: "empty" },
+      { name: "category", type: "text", notNull: true, defaultValue: "empty" },
       { name: "user", type: "link", link: { table: "users" } },
+      { name: "percentage", type: "float", notNull: true, defaultValue: "0" },
     ],
   },
   {
-    name: "goals",
+    name: "transactions",
     columns: [
-      { name: "goal", type: "text", notNull: true, defaultValue: "null" },
-      { name: "goal_target", type: "float", notNull: true, defaultValue: "0" },
+      { name: "date", type: "datetime", notNull: true, defaultValue: "now" },
+      { name: "type", type: "text", notNull: true, defaultValue: "empty" },
       {
-        name: "goal_contribution",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      { name: "user", type: "link", link: { table: "users" } },
-    ],
-  },
-  {
-    name: "account_contributions",
-    columns: [
-      { name: "acct_name", type: "text", notNull: true, defaultValue: "null" },
-      {
-        name: "contribution_amount",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      {
-        name: "balance_after",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      { name: "user", type: "link", link: { table: "users" } },
-    ],
-  },
-  {
-    name: "expenses",
-    columns: [
-      {
-        name: "expense_budgeted",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      {
-        name: "expense_actual",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
-      { name: "user", type: "link", link: { table: "users" } },
-      {
-        name: "expense_name",
+        name: "description",
         type: "text",
         notNull: true,
-        defaultValue: "null",
+        defaultValue: "empty",
       },
-    ],
-  },
-  {
-    name: "subscriptions",
-    columns: [
-      {
-        name: "subscription_name",
-        type: "text",
-        notNull: true,
-        defaultValue: "null",
-      },
-      {
-        name: "subscription_frequency",
-        type: "text",
-        notNull: true,
-        defaultValue: "null",
-      },
-      {
-        name: "next_payment_date",
-        type: "datetime",
-        notNull: true,
-        defaultValue: "now",
-      },
-      {
-        name: "subscription_amount",
-        type: "float",
-        notNull: true,
-        defaultValue: "0",
-      },
+      { name: "amount", type: "float", notNull: true, defaultValue: "0" },
       { name: "user", type: "link", link: { table: "users" } },
+      { name: "category", type: "text", notNull: true, defaultValue: "empty" },
     ],
   },
 ] as const;
@@ -143,29 +64,17 @@ export type UsersRecord = Users & XataRecord;
 export type Salary = InferredTypes["salary"];
 export type SalaryRecord = Salary & XataRecord;
 
-export type Accounts = InferredTypes["accounts"];
-export type AccountsRecord = Accounts & XataRecord;
+export type Budget = InferredTypes["budget"];
+export type BudgetRecord = Budget & XataRecord;
 
-export type Goals = InferredTypes["goals"];
-export type GoalsRecord = Goals & XataRecord;
-
-export type AccountContributions = InferredTypes["account_contributions"];
-export type AccountContributionsRecord = AccountContributions & XataRecord;
-
-export type Expenses = InferredTypes["expenses"];
-export type ExpensesRecord = Expenses & XataRecord;
-
-export type Subscriptions = InferredTypes["subscriptions"];
-export type SubscriptionsRecord = Subscriptions & XataRecord;
+export type Transactions = InferredTypes["transactions"];
+export type TransactionsRecord = Transactions & XataRecord;
 
 export type DatabaseSchema = {
   users: UsersRecord;
   salary: SalaryRecord;
-  accounts: AccountsRecord;
-  goals: GoalsRecord;
-  account_contributions: AccountContributionsRecord;
-  expenses: ExpensesRecord;
-  subscriptions: SubscriptionsRecord;
+  budget: BudgetRecord;
+  transactions: TransactionsRecord;
 };
 
 const DatabaseClient = buildClient();
