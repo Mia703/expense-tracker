@@ -35,7 +35,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-# My Notes
+## My Notes
 
 NextJS & ReactJS -- framework
 
@@ -123,3 +123,7 @@ interface FormWrapperProps {
 Make sure to adjust the type definitions based on your specific requirements and the types of children you intend to pass to the `FormWrapper` component.
 
 Expense Tracker © 2025 to Present Year by Amya Moore is licensed under CC BY-NC-SA 4.0.
+
+## Other
+
+Ref. [How to Create a Budget Tracking Web App with Hostinger](https://www.hostinger.com/tutorials/create-budget-tracking-web-app) for new expense tracker layout. The live site can be found [here](https://deepskyblue-pony-390499.hostingersite.com/).
